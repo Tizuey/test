@@ -2,508 +2,252 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jornada do Estágio - Felipe</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Jornada do Estágio</title>
     <style>
-        :root {
-            --bg-color: #0f172a;
-            --panel-bg: #1e293b;
-            --border-color: #e2e8f0;
-            --text-main: #f8fafc;
-            --hp-green: #4ade80;
-            --hp-red: #ef4444;
-            --select-blue: #3b82f6;
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: 'Press Start 2P', cursive;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            overflow: hidden;
-            touch-action: manipulation; /* Evita zoom no celular duplo clique */
-            user-select: none;
+            background-color: #1a1a1a;
+            color: #fff;
+            font-family: 'Press Start 2P', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+            overflow-x: hidden;
         }
 
-        /* Bordas estilo Pixel Art / Retro */
-        .retro-border {
-            border: 4px solid var(--border-color);
-            background-color: var(--panel-bg);
-            border-radius: 4px; /* Leve arredondamento mantendo o estilo */
-        }
-
-        /* Botões de Ação */
-        .retro-btn {
-            background: transparent;
-            color: var(--text-main);
-            text-align: left;
-            padding: 10px;
-            cursor: pointer;
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: #000;
+            border: 4px solid #fff;
+            border-radius: 10px;
+            padding: 20px;
             position: relative;
-            transition: all 0.1s;
-        }
-        
-        .retro-btn:hover, .retro-btn:active {
-            background-color: rgba(255,255,255,0.1);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
         }
 
-        .retro-btn::before {
-            content: '▶';
-            position: absolute;
-            left: -15px;
-            opacity: 0;
-            color: var(--text-main);
+        /* Tela de Diálogo (Jogo) */
+        #game-screen {
+            display: block;
         }
 
-        .retro-btn:hover::before, .retro-btn:active::before {
-            opacity: 1;
+        .pixel-art {
+            font-size: 40px;
+            margin-bottom: 20px;
+            animation: bounce 1s infinite alternate;
         }
 
-        .retro-btn:disabled {
-            color: #64748b;
-            cursor: not-allowed;
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
         }
-        .retro-btn:disabled::before {
+
+        .dialog-box {
+            background: #222;
+            border: 2px solid #fff;
+            padding: 15px;
+            min-height: 120px;
+            font-size: 12px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            border: 2px solid #fff;
+            padding: 15px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 12px;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 5px;
+            transition: 0.2s;
+        }
+
+        button:active {
+            transform: scale(0.95);
+            background: #388E3C;
+        }
+
+        .btn-blue { background: #2196F3; }
+        .btn-blue:active { background: #1976D2; }
+
+        /* Tela de Vitória */
+        #victory-screen {
             display: none;
         }
 
-        /* Barra de HP */
-        .hp-bar-container {
+        .victory-title {
+            color: #FFD700;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px #000;
+        }
+
+        .rewards-list {
+            text-align: left;
+            font-size: 10px;
+            line-height: 2;
+            margin: 20px 0;
+            background: #111;
+            padding: 15px;
+            border: 2px dashed #FFD700;
+        }
+
+        .rewards-list li {
+            margin-bottom: 15px;
+            list-style: none;
+        }
+
+        .rewards-list li::before {
+            content: "▶ ";
+            color: #FFD700;
+        }
+
+        /* Tela da Carta Digital */
+        #letter-screen {
+            display: none;
+        }
+
+        .letter-content {
+            background: #fdf5e6;
+            color: #333;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            line-height: 1.6;
+            text-align: left;
+            margin-bottom: 20px;
+            border: 2px solid #ccc;
+            font-weight: bold;
+        }
+
+        .letter-content img {
             width: 100%;
-            height: 12px;
-            background-color: #334155;
-            border: 2px solid #cbd5e1;
-            margin-top: 4px;
+            max-width: 300px;
+            border: 4px solid #fff;
+            border-radius: 10px;
+            margin: 15px auto;
+            display: block;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
 
-        .hp-bar-fill {
-            height: 100%;
-            background-color: var(--hp-green);
-            width: 100%;
-            transition: width 0.5s ease-out, background-color 0.3s;
-        }
-
-        /* Animações */
-        @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            70% { transform: translate(3px, 1px) rotate(-1deg); }
-            80% { transform: translate(-1px, -1px) rotate(1deg); }
-            90% { transform: translate(1px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
-        }
-        .shake-animation {
-            animation: shake 0.5s;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-        .blink {
-            animation: blink 1s infinite;
-        }
-        
-        .fade-in {
-            animation: fadeIn 1s forwards;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
     </style>
 </head>
-<body class="h-[100dvh] w-full flex justify-center items-center">
+<body>
 
-    <!-- CONTAINER PRINCIPAL DO JOGO -->
-    <div id="game-container" class="w-full max-w-md h-full sm:h-[85vh] flex flex-col relative retro-border shadow-2xl overflow-hidden bg-black/40">
-        
-        <!-- CABEÇALHO / INFORMAÇÕES DE ANO -->
-        <div class="p-3 border-b-4 border-slate-300 flex justify-between items-center text-[10px] bg-slate-800">
-            <span id="player-name" class="text-blue-300">JOGADOR: FELIPE</span>
-            <span id="year-display" class="text-yellow-400">ANO: 2023</span>
-        </div>
-
-        <!-- ÁREA DE BATALHA (Inimigo) -->
-        <div class="flex-1 flex flex-col justify-start p-4 relative">
-            
-            <!-- Painel do Inimigo/Desafio -->
-            <div id="enemy-panel" class="retro-border p-3 w-4/5 self-end rounded-bl-xl shadow-lg mb-4">
-                <div class="flex justify-between items-end mb-2">
-                    <h2 id="enemy-name" class="text-[10px] sm:text-xs text-red-400 leading-tight">1º Semestre</h2>
-                    <span id="enemy-lvl" class="text-[8px]">Lv50</span>
-                </div>
-                <div class="hp-bar-container">
-                    <div id="enemy-hp" class="hp-bar-fill"></div>
-                </div>
-            </div>
-
-            <!-- Sprite / Emoji do Inimigo -->
-            <div class="flex-1 flex items-center justify-center">
-                <div id="enemy-sprite" class="text-6xl sm:text-8xl transition-all duration-300 filter drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
-                    👹
-                </div>
-            </div>
-
-        </div>
-
-        <!-- ÁREA INFERIOR (Diálogo e Comandos) -->
-        <div class="h-2/5 min-h-[220px] flex flex-col p-2 gap-2">
-            
-            <!-- Caixa de Diálogo -->
-            <div class="retro-border h-24 p-3 flex items-start overflow-hidden relative">
-                <p id="dialogue-text" class="text-[9px] sm:text-[10px] leading-loose text-white/90"></p>
-                <span id="dialogue-arrow" class="absolute bottom-2 right-3 blink hidden text-[10px]">▼</span>
-            </div>
-
-            <!-- Menu de Ações -->
-            <div id="action-menu" class="retro-border flex-1 p-4 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 items-center justify-center pl-8 text-[9px] sm:text-[10px]">
-                <!-- Botões serão injetados via JS -->
-            </div>
-            
-        </div>
+    <!-- TELA 1: O JOGO -->
+    <div class="container" id="game-screen">
+        <div class="pixel-art" id="sprite">🎓</div>
+        <div class="dialog-box" id="dialog">Aperte START para iniciar a jornada de Felipe...</div>
+        <button id="next-btn" onclick="nextStep()">START</button>
     </div>
 
-    <!-- TELA DE VITÓRIA (Oculta por padrão) -->
-    <div id="victory-screen" class="hidden fixed inset-0 z-50 bg-[#0a0a0a] flex flex-col items-center justify-center p-6 text-center overflow-y-auto">
+    <!-- TELA 2: VITÓRIA -->
+    <div class="container" id="victory-screen">
+        <div class="pixel-art">🏆</div>
+        <h1 class="victory-title">PARABÉNS!<br><br>ESTÁGIO DESBLOQUEADO COM SUCESSO.</h1>
+        <p style="font-size: 12px; margin-bottom: 10px;">Seja bem vindo à vida adulta!</p>
         
-        <div class="w-full max-w-md space-y-8 fade-in">
-            <!-- Título -->
-            <h1 class="text-xl sm:text-2xl text-green-400 leading-relaxed shadow-green-500/50 drop-shadow-lg">
-                Parabéns!<br><br>
-                Estágio<br>
-                desbloqueado<br>
-                com sucesso
-            </h1>
-            
-            <p class="text-xs text-white blink mt-4">
-                Seja bem vindo a vida adulta
-            </p>
+        <ul class="rewards-list">
+            <li>1 Voucher para patinar no gelo com sua namorada no Parque Shop (20/11 às 9h).</li>
+            <li>1 Carta Digital desbloqueada.</li>
+            <li>1 Presente misterioso tão misterioso que só vai chegar semana que vem e sorry!</li>
+        </ul>
 
-            <!-- Loot Box -->
-            <div class="retro-border p-4 mt-8 bg-slate-900 text-left relative">
-                <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#0a0a0a] px-2 text-[10px] text-yellow-400">
-                    LOOT DROP
-                </div>
-                
-                <ul class="space-y-4 text-[9px] sm:text-[10px] text-slate-300 mt-4">
-                    <li class="flex items-start gap-3">
-                        <span class="text-lg">⛸️</span>
-                        <span class="leading-loose">1 voucher para patinar no gelo com sua namorada no parque shop as 16h sábado</span>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-lg">💌</span>
-                        <span class="leading-loose">1 carta especial</span>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-lg">🎁</span>
-                        <span class="leading-loose">1 presente misterioso</span>
-                    </li>
-                </ul>
-            </div>
+        <button class="btn-blue" onclick="showLetter()">ABRIR CARTA DIGITAL</button>
+    </div>
+
+    <!-- TELA 3: CARTA DIGITAL -->
+    <div class="container" id="letter-screen">
+        <div class="letter-content">
+            <p>Amor,</p>
+            <br>
+            <p>Meu grande Amor, você não tem noção de como é incrível estar ao seu lado, e ver o homem foda que você está se tornando.</p>
+            <br>
+            <p>Você deve estar com medo, uma fase nova da sua vida, pessoas novas, ambiente diferente, sua rotina vai ficar puxada.</p>
+            <br>
+            <p>E talvez você erre, talvez você não vá conseguir estudar e malhar, vai ter que acordar bem cedo e vai ficar mais cansado.</p>
+            <br>
+            <p>Mas eu estarei com você amor, pode contar comigo, eu estudo com você, te puxo para malhar, pode chorar no meu ombro, eu te busco na faculdade, faço bons resumos para as provas, o que você pedir eu farei com muito amor.</p>
+            <br>
+            <p>E claro que quando meus tios viajarem você vai ter uma barca quinta depois da facul e do job. E ainda tem sexta do poke e sábado da pizza kkkk</p>
+            <br>
+            <p>Mas não esqueça do quão foda você é, você conseguiu essa vaga por seu esforço próprio.</p>
+            <br>
+            <p>E bora comemorar e celebrar!</p>
             
-            <div class="text-[8px] text-slate-500 pt-8">
-                Fim de Jogo. Desenvolvido com ❤️
-            </div>
+            <!-- AQUI ENTRA A FOTO QUE VOCÊ VAI SUBIR NO GITHUB -->
+            <img src="1000138936.jpg" alt="Nós dois juntos">
         </div>
+        <button onclick="backToVictory()">VOLTAR</button>
     </div>
 
     <script>
-        // --- ESTADO DO JOGO ---
-        let currentStageIndex = 0;
-        let isTyping = false;
-        
-        // Elementos DOM
-        const ui = {
-            yearDisplay: document.getElementById('year-display'),
-            enemyName: document.getElementById('enemy-name'),
-            enemyLvl: document.getElementById('enemy-lvl'),
-            enemyHp: document.getElementById('enemy-hp'),
-            enemySprite: document.getElementById('enemy-sprite'),
-            dialogueText: document.getElementById('dialogue-text'),
-            actionMenu: document.getElementById('action-menu'),
-            gameContainer: document.getElementById('game-container'),
-            victoryScreen: document.getElementById('victory-screen')
-        };
-
-        // --- DEFINIÇÃO DAS FASES ---
-        const stages = [
-            {
-                year: "2023",
-                enemyName: "1º Semestre",
-                level: "Lv99",
-                sprite: "👹",
-                startText: "Felipe entrou na UFBA! Mas o 1º semestre apareceu! Ele e muito forte...",
-                hp: 100,
-                setup: function() {
-                    createButton("Sobreviver", () => {
-                        damageBoss(100, "Foi super efetivo! Felipe quase rodou, mas sobreviveu!", nextStage);
-                    });
-                }
-            },
-            {
-                year: "2024",
-                enemyName: "Greve na UFBA",
-                level: "Lv??",
-                sprite: "🛑",
-                startText: "Uma GREVE selvagem apareceu! Os servidores cairam.",
-                hp: 100,
-                setup: function() {
-                    createButton("Aguardar o 2º Sem", () => {
-                        damageBoss(100, "Felipe esperou pacientemente... A greve acabou!", nextStage);
-                    });
-                }
-            },
-            {
-                year: "2025",
-                enemyName: "Fis. 2 & Calc. 3",
-                level: "Lv100",
-                sprite: "🐉",
-                startText: "Chefões em dose dupla bloqueiam o caminho!",
-                hp: 100,
-                setup: function() {
-                    createButton("Estudar muito", () => {
-                        damageBoss(100, "Ataque critico! Materias dificeis derrotadas!", nextStage);
-                    });
-                }
-            },
-            {
-                year: "2026.1",
-                enemyName: "Tempo Livre",
-                level: "Lv1",
-                sprite: "⏳",
-                startText: "Apenas 2 materias esse semestre. O que fazer?",
-                hp: 100,
-                setup: function() {
-                    // Lógica customizada: precisa clicar nos 3
-                    let skillsLearned = 0;
-                    const hpPerSkill = 100 / 3;
-                    let currentHp = 100;
-
-                    const checkProgress = () => {
-                        skillsLearned++;
-                        currentHp -= hpPerSkill;
-                        setHP(currentHp);
-                        ui.enemySprite.classList.add('shake-animation');
-                        setTimeout(() => ui.enemySprite.classList.remove('shake-animation'), 500);
-
-                        if (skillsLearned === 3) {
-                            setHP(0);
-                            typeText("Skills equipadas com sucesso! Seu curriculo evoluiu!", () => {
-                                setTimeout(nextStage, 2000);
-                            });
-                        }
-                    };
-
-                    const btnExcel = createButton("Excel Avançado", function() {
-                        this.disabled = true;
-                        this.innerText = "✓ Excel";
-                        typeText("Felipe aprendeu Excel Avançado!");
-                        checkProgress();
-                    });
-                    
-                    const btnPowerBI = createButton("Power BI", function() {
-                        this.disabled = true;
-                        this.innerText = "✓ Power BI";
-                        typeText("Felipe aprendeu Power BI!");
-                        checkProgress();
-                    });
-                    
-                    const btnPython = createButton("Python", function() {
-                        this.disabled = true;
-                        this.innerText = "✓ Python";
-                        typeText("Felipe aprendeu Python!");
-                        checkProgress();
-                    });
-                }
-            },
-            {
-                year: "2026.2",
-                enemyName: "Mercado Traba.",
-                level: "LvBoss",
-                sprite: "🏢",
-                startText: "Felipe comeca a busca epica por um estagio...",
-                hp: 100,
-                setup: function() {
-                    const btnAcelen = createButton("Entrevista Acelen", function() {
-                        this.disabled = true;
-                        damageBoss(10, "Resultado: Nao passou...", null);
-                        checkVictory();
-                    });
-
-                    const btnAmbev = createButton("Entrevista Ambev", function() {
-                        this.disabled = true;
-                        damageBoss(10, "Foi ate a penultima fase... mas o inimigo defendeu.", null);
-                        checkVictory();
-                    });
-
-                    // Botão secreto que aparece depois
-                    let ligacaoBtn = null;
-
-                    const checkVictory = () => {
-                        if (btnAcelen.disabled && btnAmbev.disabled && !ligacaoBtn) {
-                            setTimeout(() => {
-                                typeText("O telefone esta tocando... Numero desconhecido!");
-                                ligacaoBtn = createButton("Atender Ligação", function() {
-                                    damageBoss(80, "Acelen ligou de volta! APROVADO!!!", triggerVictoryScreen);
-                                });
-                                // Limpa e adiciona só o botão de ligação
-                                ui.actionMenu.innerHTML = '';
-                                ui.actionMenu.appendChild(ligacaoBtn);
-                            }, 2500);
-                        }
-                    }
-                }
-            }
+        const story = [
+            { text: "Ano: 2023.\nFelipe entra em Engenharia Química na UFBA.", icon: "🏫" },
+            { text: "O baque foi forte. As provas foram difíceis e você quase perdeu em todas as matérias no primeiro semestre...", icon: "📉" },
+            { text: "Ano: 2024.\nGreve na UFBA! Você só conseguiu voltar à batalha no segundo semestre.", icon: "🛑" },
+            { text: "Ano: 2025.\nA fase dos Chefões! Você enfrentou as temidas matérias de Física 2 e Cálculo 3. Sobreviveu com pouco HP!", icon: "⚔️" },
+            { text: "Ano: 2026 (Semestre 1).\nVocê fez apenas 2 matérias, mas upou seus status com cursos online de Excel Avançado, Power BI e Python.", icon: "💻" },
+            { text: "Ano: 2026 (Semestre 2).\nA busca pela vaga! Você se inscreveu em várias vagas de estágio.", icon: "📄" },
+            { text: "Você teve sua primeira entrevista na Acelen... mas não passou. O jogo não acaba aqui!", icon: "❌" },
+            { text: "Você continuou lutando e chegou até a penúltima fase da Ambev. A tensão aumentava...", icon: "🍻" },
+            { text: "Até que do nada...\nRING RING! Uma ligação misteriosa muda tudo.", icon: "📱" },
+            { text: "O JOGO VIROU!\nVocê passou para a vaga na Acelen!!!", icon: "🎉" },
+            { text: "Mas espere! O boss final da burocracia apareceu: A aprovação da UFBA.", icon: "📜" },
+            { text: "Você teve que escrever e reescrever a carta de justificativa várias vezes até o coordenador aceitar.", icon: "✍️" },
+            { text: "Carta aprovada! Você envia o TCE para a Acelen e o contrato é selado.", icon: "🤝" },
+            { text: "Data de Início: 16/11.\nBOM ESTÁGIO!", icon: "🚀" }
         ];
 
-        // --- FUNÇÕES CORE DO JOGO ---
+        let currentStep = 0;
+        const dialogEl = document.getElementById('dialog');
+        const spriteEl = document.getElementById('sprite');
+        const btnEl = document.getElementById('next-btn');
 
-        function initStage(index) {
-            const stage = stages[index];
-            if(!stage) return;
+        const gameScreen = document.getElementById('game-screen');
+        const victoryScreen = document.getElementById('victory-screen');
+        const letterScreen = document.getElementById('letter-screen');
 
-            // Update UI
-            ui.yearDisplay.innerText = `ANO: ${stage.year}`;
-            ui.enemyName.innerText = stage.enemyName;
-            ui.enemyLvl.innerText = stage.level;
-            ui.enemySprite.innerText = stage.sprite;
-            setHP(stage.hp);
-            
-            // Reset Menu
-            ui.actionMenu.innerHTML = '';
-            
-            // Type Text and Setup Buttons after
-            typeText(stage.startText, () => {
-                stage.setup();
-            });
-        }
-
-        function createButton(text, onClickHandler) {
-            const btn = document.createElement('button');
-            btn.className = 'retro-btn';
-            btn.innerText = text;
-            btn.onclick = onClickHandler;
-            ui.actionMenu.appendChild(btn);
-            return btn;
-        }
-
-        function setHP(percent) {
-            if(percent < 0) percent = 0;
-            ui.enemyHp.style.width = `${percent}%`;
-            
-            // Muda cor baseado no HP
-            if(percent > 50) ui.enemyHp.style.backgroundColor = 'var(--hp-green)';
-            else if(percent > 20) ui.enemyHp.style.backgroundColor = '#facc15'; // amarelo
-            else ui.enemyHp.style.backgroundColor = 'var(--hp-red)';
-        }
-
-        function damageBoss(damagePercent, resultText, onComplete) {
-            ui.enemySprite.classList.add('shake-animation');
-            setTimeout(() => ui.enemySprite.classList.remove('shake-animation'), 500);
-
-            // Calcula novo HP baseado na largura atual
-            let currentWidth = parseFloat(ui.enemyHp.style.width) || 100;
-            setHP(currentWidth - damagePercent);
-
-            typeText(resultText, () => {
-                if(onComplete) {
-                    setTimeout(onComplete, 1500);
-                }
-            });
-        }
-
-        function typeText(text, callback) {
-            if (isTyping) return;
-            isTyping = true;
-            ui.dialogueText.innerText = '';
-            ui.actionMenu.style.pointerEvents = 'none'; // Bloqueia cliques durante o texto
-            
-            let i = 0;
-            const speed = 30; // ms por letra
-
-            function typeWriter() {
-                if (i < text.length) {
-                    ui.dialogueText.innerHTML += text.charAt(i);
-                    i++;
-                    setTimeout(typeWriter, speed);
-                } else {
-                    isTyping = false;
-                    ui.actionMenu.style.pointerEvents = 'auto';
-                    if (callback) callback();
-                }
-            }
-            typeWriter();
-        }
-
-        function nextStage() {
-            currentStageIndex++;
-            if (currentStageIndex < stages.length) {
-                // Efeito de transição suave
-                ui.gameContainer.style.opacity = '0';
-                ui.gameContainer.style.transition = 'opacity 0.3s';
-                
-                setTimeout(() => {
-                    initStage(currentStageIndex);
-                    ui.gameContainer.style.opacity = '1';
-                }, 300);
+        function nextStep() {
+            if (currentStep < story.length) {
+                dialogEl.innerText = story[currentStep].text;
+                spriteEl.innerText = story[currentStep].icon;
+                btnEl.innerText = "AVANÇAR (A)";
+                currentStep++;
+            } else {
+                // Fim da história, vai pra tela de vitória
+                gameScreen.style.display = 'none';
+                victoryScreen.style.display = 'block';
             }
         }
 
-        function triggerVictoryScreen() {
-            // Efeito visual sumindo a tela do jogo
-            ui.gameContainer.style.transition = 'opacity 1s, transform 1s';
-            ui.gameContainer.style.opacity = '0';
-            ui.gameContainer.style.transform = 'scale(0.9)';
-
-            setTimeout(() => {
-                ui.gameContainer.classList.add('hidden');
-                ui.victoryScreen.classList.remove('hidden');
-                fireConfetti();
-            }, 1000);
+        function showLetter() {
+            victoryScreen.style.display = 'none';
+            letterScreen.style.display = 'block';
         }
 
-        function fireConfetti() {
-            var duration = 4000;
-            var end = Date.now() + duration;
-
-            (function frame() {
-                // Confetes saindo das bordas
-                confetti({
-                    particleCount: 4,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0 },
-                    colors: ['#4ade80', '#facc15', '#3b82f6', '#ffffff'] 
-                });
-                confetti({
-                    particleCount: 4,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1 },
-                    colors: ['#4ade80', '#facc15', '#3b82f6', '#ffffff']
-                });
-
-                if (Date.now() < end) {
-                    requestAnimationFrame(frame);
-                }
-            }());
+        function backToVictory() {
+            letterScreen.style.display = 'none';
+            victoryScreen.style.display = 'block';
         }
-
-        // --- INICIALIZAÇÃO ---
-        // Pequeno delay inicial para criar expectativa
-        setTimeout(() => {
-            initStage(currentStageIndex);
-        }, 500);
-
     </script>
 </body>
 </html>

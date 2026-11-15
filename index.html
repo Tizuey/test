@@ -272,6 +272,8 @@
     <script>
         let currentStageIndex = 0;
         let isTyping = false;
+        let stageDone = false;      // trava os botoes quando a fase ja foi vencida
+        let transitioning = false;  // impede pular de fase duas vezes
 
         const ui = {
             yearDisplay: document.getElementById('year-display'),
@@ -348,6 +350,8 @@
 
                         typeText(msg, () => {
                             if (skillsLearned === 3) {
+                                stageDone = true;
+                                ui.actionMenu.style.pointerEvents = 'none';
                                 setHP(0);
                                 typeText("Skills equipadas com sucesso! Seu curriculo evoluiu!", () => {
                                     setTimeout(nextStage, 2000);
@@ -390,10 +394,13 @@
                     });
 
                     let ligacaoBtn = null;
+                    let phoneRang = false;
 
                     const checkVictory = () => {
-                        if (btnAcelen.disabled && btnAmbev.disabled && !ligacaoBtn) {
+                        if (btnAcelen.disabled && btnAmbev.disabled && !phoneRang) {
+                            phoneRang = true;
                             setTimeout(() => {
+                                if (currentStageIndex !== 4 || stageDone) return;
                                 typeText("O telefone esta tocando... Numero desconhecido!");
                                 ligacaoBtn = createButton("Atender Ligação", function() {
                                     damageBoss(80, "Acelen ligou de volta! APROVADO!!!", nextStage);
@@ -425,6 +432,7 @@
                         } else {
                             this.disabled = true;
                             damageBoss(20, "Carta de justificativa APROVADA pela UFBA!!!", () => {
+                                stageDone = false;
                                 ui.actionMenu.innerHTML = '';
                                 typeText("Agora e so mandar o TCE assinado para a Acelen!", () => {
                                     createButton("Enviar TCE assinado", function() {
@@ -442,6 +450,7 @@
         function initStage(index) {
             const stage = stages[index];
             if(!stage) return;
+            stageDone = false;
 
             ui.yearDisplay.innerText = `ANO: ${stage.year}`;
             ui.enemyName.innerText = stage.enemyName;
@@ -475,6 +484,11 @@
         }
 
         function damageBoss(damagePercent, resultText, onComplete) {
+            if (stageDone) return;
+            if (onComplete) {
+                stageDone = true;
+                ui.actionMenu.style.pointerEvents = 'none';
+            }
             ui.enemySprite.classList.add('shake-animation');
             setTimeout(() => ui.enemySprite.classList.remove('shake-animation'), 500);
 
@@ -507,7 +521,7 @@
                     setTimeout(typeWriter, speed);
                 } else {
                     isTyping = false;
-                    ui.actionMenu.style.pointerEvents = 'auto';
+                    ui.actionMenu.style.pointerEvents = stageDone ? 'none' : 'auto';
                     if (callback) callback();
                 }
             }
@@ -515,14 +529,18 @@
         }
 
         function nextStage() {
+            if (transitioning) return;
+            transitioning = true;
             currentStageIndex++;
             if (currentStageIndex < stages.length) {
                 ui.gameContainer.style.opacity = '0';
                 ui.gameContainer.style.transition = 'opacity 0.3s';
+                ui.actionMenu.innerHTML = '';
 
                 setTimeout(() => {
                     initStage(currentStageIndex);
                     ui.gameContainer.style.opacity = '1';
+                    transitioning = false;
                 }, 300);
             }
         }

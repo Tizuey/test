@@ -2,252 +2,365 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>A Jornada do Estágio</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            background-color: #1a1a1a;
-            color: #fff;
-            font-family: 'Press Start 2P', monospace;
+            background-color: #0f172a;
+            color: #f8fafc;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             min-height: 100vh;
-            padding: 20px;
-            text-align: center;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
-        .container {
+        .app-container {
             width: 100%;
             max-width: 400px;
-            background: #000;
-            border: 4px solid #fff;
-            border-radius: 10px;
-            padding: 20px;
+            height: 100vh;
+            max-height: 850px;
+            background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
             position: relative;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
         }
 
-        /* Tela de Diálogo (Jogo) */
+        /* ----- TELA DE JOGO ----- */
         #game-screen {
-            display: block;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 30px 20px;
         }
 
-        .pixel-art {
-            font-size: 40px;
-            margin-bottom: 20px;
-            animation: bounce 1s infinite alternate;
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
         }
 
-        @keyframes bounce {
-            from { transform: translateY(0); }
-            to { transform: translateY(-10px); }
-        }
-
-        .dialog-box {
-            background: #222;
-            border: 2px solid #fff;
-            padding: 15px;
-            min-height: 120px;
+        .level-badge {
+            background: rgba(56, 189, 248, 0.1);
+            color: #38bdf8;
+            padding: 8px 16px;
+            border-radius: 20px;
             font-size: 12px;
-            line-height: 1.8;
-            margin-bottom: 20px;
-            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            display: inline-block;
+            margin-bottom: 15px;
         }
 
-        button {
-            background: #4CAF50;
-            color: white;
-            border: 2px solid #fff;
-            padding: 15px;
-            font-family: 'Press Start 2P', monospace;
-            font-size: 12px;
-            cursor: pointer;
+        .progress-container {
             width: 100%;
-            border-radius: 5px;
-            transition: 0.2s;
+            height: 8px;
+            background: #334155;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
         }
 
-        button:active {
-            transform: scale(0.95);
-            background: #388E3C;
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            border-radius: 4px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .btn-blue { background: #2196F3; }
-        .btn-blue:active { background: #1976D2; }
+        .progress-text {
+            font-size: 12px;
+            color: #94a3b8;
+            text-align: right;
+        }
 
-        /* Tela de Vitória */
+        .card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .icon-container {
+            font-size: 60px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .story-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #e2e8f0;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+            transition: transform 0.1s, box-shadow 0.1s;
+            width: 100%;
+        }
+
+        .btn-action:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 5px rgba(59, 130, 246, 0.4);
+        }
+
+        /* ----- TELA DE VITÓRIA ----- */
         #victory-screen {
             display: none;
+            padding: 40px 20px;
+            text-align: center;
+            height: 100%;
+            overflow-y: auto;
         }
 
         .victory-title {
-            color: #FFD700;
-            font-size: 16px;
-            line-height: 1.5;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px #000;
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(to right, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
         }
 
-        .rewards-list {
+        .victory-subtitle {
+            font-size: 14px;
+            color: #cbd5e1;
+            margin-bottom: 30px;
+        }
+
+        .rewards-box {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 12px;
+            padding: 20px;
             text-align: left;
-            font-size: 10px;
-            line-height: 2;
-            margin: 20px 0;
-            background: #111;
-            padding: 15px;
-            border: 2px dashed #FFD700;
+            margin-bottom: 30px;
         }
 
-        .rewards-list li {
+        .rewards-box h3 {
+            color: #fbbf24;
+            font-size: 14px;
             margin-bottom: 15px;
-            list-style: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .rewards-list li::before {
-            content: "▶ ";
-            color: #FFD700;
+        .reward-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #f1f5f9;
+            line-height: 1.5;
         }
 
-        /* Tela da Carta Digital */
+        .reward-item span {
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        }
+
+        /* ----- TELA DA CARTA ----- */
         #letter-screen {
             display: none;
+            padding: 30px 20px;
+            height: 100%;
+            overflow-y: auto;
+            background: #f8fafc;
+            color: #0f172a;
         }
 
         .letter-content {
-            background: #fdf5e6;
-            color: #333;
-            font-family: 'Courier New', Courier, monospace;
-            padding: 20px;
-            border-radius: 5px;
-            font-size: 14px;
-            line-height: 1.6;
-            text-align: left;
-            margin-bottom: 20px;
-            border: 2px solid #ccc;
-            font-weight: bold;
+            font-family: 'Georgia', serif;
+            font-size: 15px;
+            line-height: 1.8;
+            margin-bottom: 30px;
         }
 
-        .letter-content img {
+        .letter-content p {
+            margin-bottom: 15px;
+        }
+
+        .couple-photo {
             width: 100%;
-            max-width: 300px;
+            border-radius: 12px;
+            margin-top: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             border: 4px solid #fff;
-            border-radius: 10px;
-            margin: 15px auto;
-            display: block;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .btn-dark {
+            background: #1e293b;
+            color: white;
+        }
+
+        /* Animação de Fade */
+        .fade-in {
+            animation: fadeIn 0.4s ease-in forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
     </style>
 </head>
 <body>
 
-    <!-- TELA 1: O JOGO -->
-    <div class="container" id="game-screen">
-        <div class="pixel-art" id="sprite">🎓</div>
-        <div class="dialog-box" id="dialog">Aperte START para iniciar a jornada de Felipe...</div>
-        <button id="next-btn" onclick="nextStep()">START</button>
-    </div>
-
-    <!-- TELA 2: VITÓRIA -->
-    <div class="container" id="victory-screen">
-        <div class="pixel-art">🏆</div>
-        <h1 class="victory-title">PARABÉNS!<br><br>ESTÁGIO DESBLOQUEADO COM SUCESSO.</h1>
-        <p style="font-size: 12px; margin-bottom: 10px;">Seja bem vindo à vida adulta!</p>
+    <div class="app-container">
         
-        <ul class="rewards-list">
-            <li>1 Voucher para patinar no gelo com sua namorada no Parque Shop (20/11 às 9h).</li>
-            <li>1 Carta Digital desbloqueada.</li>
-            <li>1 Presente misterioso tão misterioso que só vai chegar semana que vem e sorry!</li>
-        </ul>
+        <!-- TELA 1: O JOGO -->
+        <div id="game-screen">
+            <div class="header">
+                <div class="level-badge" id="year-badge">ANO: 2023</div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress"></div>
+                </div>
+                <div class="progress-text" id="progress-text">0% Completo</div>
+            </div>
 
-        <button class="btn-blue" onclick="showLetter()">ABRIR CARTA DIGITAL</button>
-    </div>
+            <div class="card" id="story-card">
+                <div class="icon-container" id="icon">🎓</div>
+                <div class="story-text" id="text">Você entrou em Engenharia Química na UFBA. O começo de um sonho...</div>
+            </div>
 
-    <!-- TELA 3: CARTA DIGITAL -->
-    <div class="container" id="letter-screen">
-        <div class="letter-content">
-            <p>Amor,</p>
-            <br>
-            <p>Meu grande Amor, você não tem noção de como é incrível estar ao seu lado, e ver o homem foda que você está se tornando.</p>
-            <br>
-            <p>Você deve estar com medo, uma fase nova da sua vida, pessoas novas, ambiente diferente, sua rotina vai ficar puxada.</p>
-            <br>
-            <p>E talvez você erre, talvez você não vá conseguir estudar e malhar, vai ter que acordar bem cedo e vai ficar mais cansado.</p>
-            <br>
-            <p>Mas eu estarei com você amor, pode contar comigo, eu estudo com você, te puxo para malhar, pode chorar no meu ombro, eu te busco na faculdade, faço bons resumos para as provas, o que você pedir eu farei com muito amor.</p>
-            <br>
-            <p>E claro que quando meus tios viajarem você vai ter uma barca quinta depois da facul e do job. E ainda tem sexta do poke e sábado da pizza kkkk</p>
-            <br>
-            <p>Mas não esqueça do quão foda você é, você conseguiu essa vaga por seu esforço próprio.</p>
-            <br>
-            <p>E bora comemorar e celebrar!</p>
-            
-            <!-- AQUI ENTRA A FOTO QUE VOCÊ VAI SUBIR NO GITHUB -->
-            <img src="1000138936.jpg" alt="Nós dois juntos">
+            <button class="btn-action" id="action-btn" onclick="nextPhase()">Avançar</button>
         </div>
-        <button onclick="backToVictory()">VOLTAR</button>
+
+        <!-- TELA 2: VITÓRIA -->
+        <div id="victory-screen">
+            <div class="icon-container" style="font-size: 80px; margin-bottom: 10px;">🏆</div>
+            <h1 class="victory-title">PARABÉNS!</h1>
+            <h2 class="victory-title" style="font-size: 18px; margin-bottom: 5px;">ESTÁGIO DESBLOQUEADO COM SUCESSO</h2>
+            <p class="victory-subtitle">Seja bem vindo à vida adulta.</p>
+            
+            <div class="rewards-box">
+                <h3>Loot Drop (Recompensas)</h3>
+                <div class="reward-item">
+                    <span>⛸️</span> 1 Voucher para patinar no gelo com sua namorada no Parque Shop (20/11 às 9h).
+                </div>
+                <div class="reward-item">
+                    <span>💌</span> 1 Carta Especial desbloqueada.
+                </div>
+                <div class="reward-item">
+                    <span>🎁</span> 1 Presente misterioso (tão misterioso que só vai chegar semana que vem, sorry!).
+                </div>
+            </div>
+
+            <button class="btn-action btn-gold" onclick="openLetter()">Abrir Carta Especial</button>
+        </div>
+
+        <!-- TELA 3: CARTA DIGITAL -->
+        <div id="letter-screen">
+            <div class="letter-content fade-in">
+                <p>Amor,</p>
+                
+                <p>Meu grande Amor, você não tem noção de como é incrível estar ao seu lado, e ver o homem foda que você está se tornando.</p>
+                
+                <p>Você deve estar com medo, uma fase nova da sua vida, pessoas novas, ambiente diferente, sua rotina vai ficar puxada.</p>
+                
+                <p>E talvez você erre, talvez você não vá conseguir estudar e malhar, vai ter que acordar bem cedo e vai ficar mais cansado.</p>
+                
+                <p>Mas eu estarei com você amor, pode contar comigo, eu estudo com você, te puxo para malhar, pode chorar no meu ombro, eu te busco na faculdade, faço bons resumos para as provas, o que você pedir eu farei com muito amor.</p>
+                
+                <p>E claro que quando meus tios viajarem você vai ter uma barca quinta depois da facul e do job. e ainda tem sexta do poke e sábado da pizza kkkk</p>
+                
+                <p>Mas não esqueça do quão foda você é, você conseguiu essa vaga por seu esforço próprio.</p>
+                
+                <p>E bora comemorar e celebrar!</p>
+                
+                <img src="1000138936.jpg" alt="Nós dois" class="couple-photo">
+            </div>
+            
+            <button class="btn-action btn-dark" onclick="closeLetter()" style="margin-top: 20px;">Voltar</button>
+        </div>
+
     </div>
 
     <script>
-        const story = [
-            { text: "Ano: 2023.\nFelipe entra em Engenharia Química na UFBA.", icon: "🏫" },
-            { text: "O baque foi forte. As provas foram difíceis e você quase perdeu em todas as matérias no primeiro semestre...", icon: "📉" },
-            { text: "Ano: 2024.\nGreve na UFBA! Você só conseguiu voltar à batalha no segundo semestre.", icon: "🛑" },
-            { text: "Ano: 2025.\nA fase dos Chefões! Você enfrentou as temidas matérias de Física 2 e Cálculo 3. Sobreviveu com pouco HP!", icon: "⚔️" },
-            { text: "Ano: 2026 (Semestre 1).\nVocê fez apenas 2 matérias, mas upou seus status com cursos online de Excel Avançado, Power BI e Python.", icon: "💻" },
-            { text: "Ano: 2026 (Semestre 2).\nA busca pela vaga! Você se inscreveu em várias vagas de estágio.", icon: "📄" },
-            { text: "Você teve sua primeira entrevista na Acelen... mas não passou. O jogo não acaba aqui!", icon: "❌" },
-            { text: "Você continuou lutando e chegou até a penúltima fase da Ambev. A tensão aumentava...", icon: "🍻" },
-            { text: "Até que do nada...\nRING RING! Uma ligação misteriosa muda tudo.", icon: "📱" },
-            { text: "O JOGO VIROU!\nVocê passou para a vaga na Acelen!!!", icon: "🎉" },
-            { text: "Mas espere! O boss final da burocracia apareceu: A aprovação da UFBA.", icon: "📜" },
-            { text: "Você teve que escrever e reescrever a carta de justificativa várias vezes até o coordenador aceitar.", icon: "✍️" },
-            { text: "Carta aprovada! Você envia o TCE para a Acelen e o contrato é selado.", icon: "🤝" },
-            { text: "Data de Início: 16/11.\nBOM ESTÁGIO!", icon: "🚀" }
+        const phases = [
+            { year: "ANO: 2023", icon: "📉", text: "O baque inicial. As provas foram pesadas, e você foi muito mal, quase perdendo em todas as matérias no primeiro semestre." },
+            { year: "ANO: 2024", icon: "🛑", text: "Greve na UFBA! Tudo parou e você só conseguiu voltar para a faculdade no segundo semestre." },
+            { year: "ANO: 2025", icon: "⚙️", text: "Você passou pelo moedor de carne enfrentando as matérias mais difíceis: Física 2 e Cálculo 3." },
+            { year: "ANO: 2026", icon: "💻", text: "No primeiro semestre você fez apenas 2 matérias, mas focou em se aprimorar com cursos online de Excel Avançado, Power BI e Python." },
+            { year: "ANO: 2026", icon: "🎯", text: "No segundo semestre, a caçada começou. Você se inscreveu em várias vagas de estágio." },
+            { year: "A BUSCA", icon: "❌", text: "Você teve sua primeira entrevista na Acelen... mas acabou não passando." },
+            { year: "A BUSCA", icon: "🍻", text: "Você continuou firme e chegou até a penúltima fase da Ambev." },
+            { year: "O PLOT TWIST", icon: "📱", text: "Até que do nada... uma ligação misteriosa." },
+            { year: "VITÓRIA", icon: "🎉", text: "Felipe, você passou para a vaga na Acelen!" },
+            { year: "BOSS FINAL", icon: "📜", text: "Mas a UFBA tinha um último teste de paciência: a aprovação do estágio." },
+            { year: "BUROCRACIA", icon: "✍️", text: "Você teve que escrever e reescrever a carta de justificativa repetidas vezes até ela ficar boa o suficiente." },
+            { year: "CONTRATO", icon: "🤝", text: "Carta aceita! Você envia o TCE para a Acelen." },
+            { year: "O INÍCIO", icon: "🚀", text: "Tudo pronto! Você começa o estágio oficialmente no dia 16/11." }
         ];
 
-        let currentStep = 0;
-        const dialogEl = document.getElementById('dialog');
-        const spriteEl = document.getElementById('sprite');
-        const btnEl = document.getElementById('next-btn');
+        let currentPhase = -1; // -1 é a tela inicial que já está no HTML
+        const totalPhases = phases.length;
 
-        const gameScreen = document.getElementById('game-screen');
-        const victoryScreen = document.getElementById('victory-screen');
-        const letterScreen = document.getElementById('letter-screen');
+        function updateUI() {
+            const data = phases[currentPhase];
+            
+            // Elementos
+            const badge = document.getElementById('year-badge');
+            const icon = document.getElementById('icon');
+            const text = document.getElementById('text');
+            const card = document.getElementById('story-card');
+            
+            // Remove animação para resetar
+            card.classList.remove('fade-in');
+            void card.offsetWidth; // trigger reflow
+            
+            // Atualiza conteúdo
+            badge.innerText = data.year;
+            icon.innerText = data.icon;
+            text.innerText = data.text;
+            
+            // Adiciona animação
+            card.classList.add('fade-in');
 
-        function nextStep() {
-            if (currentStep < story.length) {
-                dialogEl.innerText = story[currentStep].text;
-                spriteEl.innerText = story[currentStep].icon;
-                btnEl.innerText = "AVANÇAR (A)";
-                currentStep++;
-            } else {
-                // Fim da história, vai pra tela de vitória
-                gameScreen.style.display = 'none';
-                victoryScreen.style.display = 'block';
-            }
-        }
-
-        function showLetter() {
-            victoryScreen.style.display = 'none';
-            letterScreen.style.display = 'block';
-        }
-
-        function backToVictory() {
-            letterScreen.style.display = 'none';
-            victoryScreen.style.display = 'block';
-        }
-    </script>
-</body>
-</html>
+            // Atualiza barra de progresso
+            const progressPercent = Math.round(((currentPhase + 1) / totalPhases) * 100);
+            document.getElementById('progress').style.width

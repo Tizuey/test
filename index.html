@@ -3,364 +3,618 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>A Jornada do Estágio</title>
+    <title>Jornada do Estágio - Felipe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
+        :root {
+            --bg-color: #0f172a;
+            --panel-bg: #1e293b;
+            --border-color: #e2e8f0;
+            --text-main: #f8fafc;
+            --hp-green: #4ade80;
+            --hp-red: #ef4444;
+            --select-blue: #3b82f6;
         }
 
         body {
-            background-color: #0f172a;
-            color: #f8fafc;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            font-family: 'Press Start 2P', cursive;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             overflow: hidden;
+            touch-action: manipulation; /* Evita zoom no celular duplo clique */
+            user-select: none;
         }
 
-        .app-container {
-            width: 100%;
-            max-width: 400px;
-            height: 100vh;
-            max-height: 850px;
-            background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 40px rgba(0,0,0,0.5);
-        }
-
-        /* ----- TELA DE JOGO ----- */
-        #game-screen {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            padding: 30px 20px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .level-badge {
-            background: rgba(56, 189, 248, 0.1);
-            color: #38bdf8;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            display: inline-block;
-            margin-bottom: 15px;
-        }
-
-        .progress-container {
-            width: 100%;
-            height: 8px;
-            background: #334155;
+        /* Bordas estilo Pixel Art / Retro */
+        .retro-border {
+            border: 4px solid var(--border-color);
+            background-color: var(--panel-bg);
             border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 10px;
         }
 
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #38bdf8, #818cf8);
-            border-radius: 4px;
-            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .progress-text {
-            font-size: 12px;
-            color: #94a3b8;
-            text-align: right;
-        }
-
-        .card {
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 30px 20px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            margin-bottom: 30px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .icon-container {
-            font-size: 60px;
-            margin-bottom: 20px;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
-        .story-text {
-            font-size: 16px;
-            line-height: 1.6;
-            color: #e2e8f0;
-            min-height: 120px;
-            display: flex;
-            align-items: center;
-        }
-
-        .btn-action {
-            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
-            color: white;
-            border: none;
-            padding: 18px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-            transition: transform 0.1s, box-shadow 0.1s;
-            width: 100%;
-        }
-
-        .btn-action:active {
-            transform: scale(0.98);
-            box-shadow: 0 2px 5px rgba(59, 130, 246, 0.4);
-        }
-
-        /* ----- TELA DE VITÓRIA ----- */
-        #victory-screen {
-            display: none;
-            padding: 40px 20px;
-            text-align: center;
-            height: 100%;
-            overflow-y: auto;
-        }
-
-        .victory-title {
-            font-size: 28px;
-            font-weight: 800;
-            background: linear-gradient(to right, #fbbf24, #f59e0b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
-
-        .victory-subtitle {
-            font-size: 14px;
-            color: #cbd5e1;
-            margin-bottom: 30px;
-        }
-
-        .rewards-box {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(251, 191, 36, 0.3);
-            border-radius: 12px;
-            padding: 20px;
+        /* Botões de Ação */
+        .retro-btn {
+            background: transparent;
+            color: var(--text-main);
             text-align: left;
-            margin-bottom: 30px;
+            padding: 10px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.1s;
+        }
+        
+        .retro-btn:hover, .retro-btn:active {
+            background-color: rgba(255,255,255,0.1);
         }
 
-        .rewards-box h3 {
-            color: #fbbf24;
-            font-size: 14px;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .retro-btn::before {
+            content: '▶';
+            position: absolute;
+            left: -15px;
+            opacity: 0;
+            color: var(--text-main);
         }
 
-        .reward-item {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 12px;
-            font-size: 13px;
-            color: #f1f5f9;
-            line-height: 1.5;
+        .retro-btn:hover::before, .retro-btn:active::before {
+            opacity: 1;
         }
 
-        .reward-item span {
-            margin-right: 10px;
-            font-size: 16px;
+        .retro-btn:disabled {
+            color: #64748b;
+            cursor: not-allowed;
         }
-
-        .btn-gold {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
-        }
-
-        /* ----- TELA DA CARTA ----- */
-        #letter-screen {
+        .retro-btn:disabled::before {
             display: none;
-            padding: 30px 20px;
-            height: 100%;
-            overflow-y: auto;
-            background: #f8fafc;
-            color: #0f172a;
         }
 
-        .letter-content {
-            font-family: 'Georgia', serif;
-            font-size: 15px;
-            line-height: 1.8;
-            margin-bottom: 30px;
-        }
-
-        .letter-content p {
-            margin-bottom: 15px;
-        }
-
-        .couple-photo {
+        /* Barra de HP */
+        .hp-bar-container {
             width: 100%;
-            border-radius: 12px;
-            margin-top: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            border: 4px solid #fff;
+            height: 12px;
+            background-color: #334155;
+            border: 2px solid #cbd5e1;
+            margin-top: 4px;
         }
 
-        .btn-dark {
-            background: #1e293b;
-            color: white;
+        .hp-bar-fill {
+            height: 100%;
+            background-color: var(--hp-green);
+            width: 100%;
+            transition: width 0.5s ease-out, background-color 0.3s;
         }
 
-        /* Animação de Fade */
+        /* Animações */
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+        .shake-animation {
+            animation: shake 0.5s;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .blink {
+            animation: blink 1s infinite;
+        }
+        
         .fade-in {
-            animation: fadeIn 0.4s ease-in forwards;
+            animation: fadeIn 1s forwards;
         }
-
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-
     </style>
 </head>
-<body>
+<body class="h-[100dvh] w-full flex justify-center items-center">
 
-    <div class="app-container">
+    <!-- CONTAINER PRINCIPAL DO JOGO -->
+    <div id="game-container" class="w-full max-w-md h-full sm:h-[85vh] flex flex-col relative retro-border shadow-2xl overflow-hidden bg-black/40">
         
-        <!-- TELA 1: O JOGO -->
-        <div id="game-screen">
-            <div class="header">
-                <div class="level-badge" id="year-badge">ANO: 2023</div>
-                <div class="progress-container">
-                    <div class="progress-bar" id="progress"></div>
-                </div>
-                <div class="progress-text" id="progress-text">0% Completo</div>
-            </div>
-
-            <div class="card" id="story-card">
-                <div class="icon-container" id="icon">🎓</div>
-                <div class="story-text" id="text">Você entrou em Engenharia Química na UFBA. O começo de um sonho...</div>
-            </div>
-
-            <button class="btn-action" id="action-btn" onclick="nextPhase()">Avançar</button>
+        <!-- CABEÇALHO / INFORMAÇÕES DE ANO -->
+        <div class="p-3 border-b-4 border-slate-300 flex justify-between items-center text-[10px] bg-slate-800">
+            <span id="player-name" class="text-blue-300">JOGADOR: FELIPE</span>
+            <span id="year-display" class="text-yellow-400">ANO: 2023</span>
         </div>
 
-        <!-- TELA 2: VITÓRIA -->
-        <div id="victory-screen">
-            <div class="icon-container" style="font-size: 80px; margin-bottom: 10px;">🏆</div>
-            <h1 class="victory-title">PARABÉNS!</h1>
-            <h2 class="victory-title" style="font-size: 18px; margin-bottom: 5px;">ESTÁGIO DESBLOQUEADO COM SUCESSO</h2>
-            <p class="victory-subtitle">Seja bem vindo à vida adulta.</p>
+        <!-- ÁREA DE BATALHA (Inimigo) -->
+        <div class="flex-1 flex flex-col justify-start p-4 relative">
             
-            <div class="rewards-box">
-                <h3>Loot Drop (Recompensas)</h3>
-                <div class="reward-item">
-                    <span>⛸️</span> 1 Voucher para patinar no gelo com sua namorada no Parque Shop (20/11 às 9h).
+            <!-- Painel do Inimigo/Desafio -->
+            <div id="enemy-panel" class="retro-border p-3 w-4/5 self-end rounded-bl-xl shadow-lg mb-4">
+                <div class="flex justify-between items-end mb-2">
+                    <h2 id="enemy-name" class="text-[10px] sm:text-xs text-red-400 leading-tight">1º Semestre</h2>
+                    <span id="enemy-lvl" class="text-[8px]">Lv50</span>
                 </div>
-                <div class="reward-item">
-                    <span>💌</span> 1 Carta Especial desbloqueada.
-                </div>
-                <div class="reward-item">
-                    <span>🎁</span> 1 Presente misterioso (tão misterioso que só vai chegar semana que vem, sorry!).
+                <div class="hp-bar-container">
+                    <div id="enemy-hp" class="hp-bar-fill"></div>
                 </div>
             </div>
 
-            <button class="btn-action btn-gold" onclick="openLetter()">Abrir Carta Especial</button>
+            <!-- Sprite / Emoji do Inimigo -->
+            <div class="flex-1 flex items-center justify-center">
+                <div id="enemy-sprite" class="text-6xl sm:text-8xl transition-all duration-300 filter drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
+                    👹
+                </div>
+            </div>
+
         </div>
 
-        <!-- TELA 3: CARTA DIGITAL -->
-        <div id="letter-screen">
-            <div class="letter-content fade-in">
-                <p>Amor,</p>
-                
-                <p>Meu grande Amor, você não tem noção de como é incrível estar ao seu lado, e ver o homem foda que você está se tornando.</p>
-                
-                <p>Você deve estar com medo, uma fase nova da sua vida, pessoas novas, ambiente diferente, sua rotina vai ficar puxada.</p>
-                
-                <p>E talvez você erre, talvez você não vá conseguir estudar e malhar, vai ter que acordar bem cedo e vai ficar mais cansado.</p>
-                
-                <p>Mas eu estarei com você amor, pode contar comigo, eu estudo com você, te puxo para malhar, pode chorar no meu ombro, eu te busco na faculdade, faço bons resumos para as provas, o que você pedir eu farei com muito amor.</p>
-                
-                <p>E claro que quando meus tios viajarem você vai ter uma barca quinta depois da facul e do job. e ainda tem sexta do poke e sábado da pizza kkkk</p>
-                
-                <p>Mas não esqueça do quão foda você é, você conseguiu essa vaga por seu esforço próprio.</p>
-                
-                <p>E bora comemorar e celebrar!</p>
-                
-                <img src="1000138936.jpg" alt="Nós dois" class="couple-photo">
+        <!-- ÁREA INFERIOR (Diálogo e Comandos) -->
+        <div class="h-2/5 min-h-[220px] flex flex-col p-2 gap-2">
+            
+            <!-- Caixa de Diálogo -->
+            <div class="retro-border h-24 p-3 flex items-start overflow-hidden relative">
+                <p id="dialogue-text" class="text-[9px] sm:text-[10px] leading-loose text-white/90"></p>
+                <span id="dialogue-arrow" class="absolute bottom-2 right-3 blink hidden text-[10px]">▼</span>
+            </div>
+
+            <!-- Menu de Ações -->
+            <div id="action-menu" class="retro-border flex-1 p-4 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 items-center justify-center pl-8 text-[9px] sm:text-[10px]">
+                <!-- Botões serão injetados via JS -->
             </div>
             
-            <button class="btn-action btn-dark" onclick="closeLetter()" style="margin-top: 20px;">Voltar</button>
         </div>
+    </div>
 
+    <!-- TELA DE VITÓRIA -->
+    <div id="victory-screen" class="hidden fixed inset-0 z-40 bg-[#0a0a0a] flex flex-col items-center justify-center p-6 text-center overflow-y-auto">
+        
+        <div class="w-full max-w-md space-y-8 fade-in">
+            <!-- Título -->
+            <h1 class="text-xl sm:text-2xl text-green-400 leading-relaxed shadow-green-500/50 drop-shadow-lg">
+                Parabéns!<br><br>
+                Estágio<br>
+                desbloqueado<br>
+                com sucesso
+            </h1>
+            
+            <p class="text-xs text-white blink mt-4">
+                Seja bem vindo a vida adulta
+            </p>
+
+            <!-- Loot Box -->
+            <div class="retro-border p-4 mt-8 bg-slate-900 text-left relative">
+                <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#0a0a0a] px-2 text-[10px] text-yellow-400">
+                    LOOT DROP
+                </div>
+                
+                <ul class="space-y-4 text-[9px] sm:text-[10px] text-slate-300 mt-4">
+                    <li class="flex items-start gap-3">
+                        <span class="text-lg">⛸️</span>
+                        <span class="leading-loose">1 voucher para patinar no gelo com sua namorada no parque shop as 9h 20/11</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-lg">💌</span>
+                        <span class="leading-loose">
+                            <button onclick="openLetter()" class="text-yellow-400 hover:text-yellow-200 underline underline-offset-4 animate-pulse">
+                                [ Clique para abrir a Carta Especial ]
+                            </button>
+                        </span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-lg">🎁</span>
+                        <span class="leading-loose">1 presente misterioso tão misterioso que so vai chegar semana que vem e sorry .</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="text-[8px] text-slate-500 pt-8 pb-4">
+                Fim de Jogo. Desenvolvido com ❤️ pela sua Namorada
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA DA CARTA DIGITAL (Invisível até clicar) -->
+    <div id="letter-screen" class="hidden fixed inset-0 z-50 bg-[#0a0a0a] overflow-y-auto">
+        <div class="flex flex-col items-center p-6 min-h-screen">
+            <div class="w-full max-w-md bg-amber-50 text-slate-900 p-6 rounded shadow-2xl relative mt-4 mb-8">
+                <!-- Usando uma fonte mais legível para a carta -->
+                <div class="font-sans text-sm sm:text-base leading-relaxed text-justify space-y-4">
+                    <p class="font-bold text-lg">Amor,</p>
+                    
+                    <p>Meu grande Amor, você não tem noção de como é incrível estar ao seu lado, e ver o homem foda que você está se tornando.</p>
+                    
+                    <p>Você deve estar com medo, uma fase nova da sua vida, pessoas novas, ambiente diferente, sua rotina vai ficar puxada.</p>
+                    
+                    <p>E talvez você erre, talvez você não vá conseguir estudar e malhar, vai ter que acordar bem cedo e vai ficar mais cansado.</p>
+                    
+                    <p>Mas eu estarei com você amor, pode contar comigo, eu estudo com você, te puxo para malhar, pode chorar no meu ombro, eu te busco na faculdade, faço bons resumos para as provas, o que você pedir eu farei com muito amor.</p>
+                    
+                    <p>E claro que quando meus tios viajarem você vai ter uma barca quinta depois da facul e do job. e ainda tem sexta do poke e sábado da pizza kkkk</p>
+                    
+                    <p>Mas não esqueça do quão foda você é, você conseguiu essa vaga por seu esforço próprio.</p>
+                    
+                    <p>e bora comemorar celebrar</p>
+                </div>
+
+                <!-- Foto do Casal -->
+                <div class="mt-6 border-4 border-white shadow-md transform rotate-1 bg-white p-2">
+                    <img src="1000138936.jpg" alt="Foto Felipe e Tizuey" class="w-full h-auto">
+                </div>
+
+                <!-- Botão Voltar -->
+                <button onclick="closeLetter()" class="mt-8 w-full bg-slate-900 text-white font-['Press_Start_2P'] text-[10px] py-4 rounded hover:bg-slate-700 transition active:scale-95">
+                    ◀ VOLTAR PARA PRÊMIOS
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
-        const phases = [
-            { year: "ANO: 2023", icon: "📉", text: "O baque inicial. As provas foram pesadas, e você foi muito mal, quase perdendo em todas as matérias no primeiro semestre." },
-            { year: "ANO: 2024", icon: "🛑", text: "Greve na UFBA! Tudo parou e você só conseguiu voltar para a faculdade no segundo semestre." },
-            { year: "ANO: 2025", icon: "⚙️", text: "Você passou pelo moedor de carne enfrentando as matérias mais difíceis: Física 2 e Cálculo 3." },
-            { year: "ANO: 2026", icon: "💻", text: "No primeiro semestre você fez apenas 2 matérias, mas focou em se aprimorar com cursos online de Excel Avançado, Power BI e Python." },
-            { year: "ANO: 2026", icon: "🎯", text: "No segundo semestre, a caçada começou. Você se inscreveu em várias vagas de estágio." },
-            { year: "A BUSCA", icon: "❌", text: "Você teve sua primeira entrevista na Acelen... mas acabou não passando." },
-            { year: "A BUSCA", icon: "🍻", text: "Você continuou firme e chegou até a penúltima fase da Ambev." },
-            { year: "O PLOT TWIST", icon: "📱", text: "Até que do nada... uma ligação misteriosa." },
-            { year: "VITÓRIA", icon: "🎉", text: "Felipe, você passou para a vaga na Acelen!" },
-            { year: "BOSS FINAL", icon: "📜", text: "Mas a UFBA tinha um último teste de paciência: a aprovação do estágio." },
-            { year: "BUROCRACIA", icon: "✍️", text: "Você teve que escrever e reescrever a carta de justificativa repetidas vezes até ela ficar boa o suficiente." },
-            { year: "CONTRATO", icon: "🤝", text: "Carta aceita! Você envia o TCE para a Acelen." },
-            { year: "O INÍCIO", icon: "🚀", text: "Tudo pronto! Você começa o estágio oficialmente no dia 16/11." }
+        // --- ESTADO DO JOGO ---
+        let currentStageIndex = 0;
+        let isTyping = false;
+        
+        // Elementos DOM
+        const ui = {
+            yearDisplay: document.getElementById('year-display'),
+            enemyName: document.getElementById('enemy-name'),
+            enemyLvl: document.getElementById('enemy-lvl'),
+            enemyHp: document.getElementById('enemy-hp'),
+            enemySprite: document.getElementById('enemy-sprite'),
+            dialogueText: document.getElementById('dialogue-text'),
+            actionMenu: document.getElementById('action-menu'),
+            gameContainer: document.getElementById('game-container'),
+            victoryScreen: document.getElementById('victory-screen'),
+            letterScreen: document.getElementById('letter-screen')
+        };
+
+        // --- DEFINIÇÃO DAS FASES ---
+        const stages = [
+            {
+                year: "2023",
+                enemyName: "1º Semestre",
+                level: "Lv99",
+                sprite: "👹",
+                startText: "Felipe entrou na UFBA! Mas o 1º semestre apareceu! Ele e muito forte...",
+                hp: 100,
+                setup: function() {
+                    createButton("Sobreviver", () => {
+                        damageBoss(100, "Foi super efetivo! Felipe quase rodou, mas sobreviveu!", nextStage);
+                    });
+                }
+            },
+            {
+                year: "2024",
+                enemyName: "Greve na UFBA",
+                level: "Lv??",
+                sprite: "🛑",
+                startText: "Uma GREVE selvagem apareceu! Os servidores cairam.",
+                hp: 100,
+                setup: function() {
+                    createButton("Aguardar o 2º Sem", () => {
+                        damageBoss(100, "Felipe esperou pacientemente... A greve acabou!", nextStage);
+                    });
+                }
+            },
+            {
+                year: "2025",
+                enemyName: "Fis. 2 & Calc. 3",
+                level: "Lv100",
+                sprite: "🐉",
+                startText: "Chefões em dose dupla bloqueiam o caminho!",
+                hp: 100,
+                setup: function() {
+                    createButton("Estudar muito", () => {
+                        damageBoss(100, "Ataque critico! Materias dificeis derrotadas!", nextStage);
+                    });
+                }
+            },
+            {
+                year: "2026.1",
+                enemyName: "Tempo Livre",
+                level: "Lv1",
+                sprite: "⏳",
+                startText: "Apenas 2 materias esse semestre. O que fazer?",
+                hp: 100,
+                setup: function() {
+                    let skillsLearned = 0;
+                    const hpPerSkill = 100 / 3;
+                    let currentHp = 100;
+
+                    const checkProgress = () => {
+                        skillsLearned++;
+                        currentHp -= hpPerSkill;
+                        setHP(currentHp);
+                        ui.enemySprite.classList.add('shake-animation');
+                        setTimeout(() => ui.enemySprite.classList.remove('shake-animation'), 500);
+
+                        if (skillsLearned === 3) {
+                            setHP(0);
+                            typeText("Skills equipadas com sucesso! Seu curriculo evoluiu!", () => {
+                                setTimeout(nextStage, 2000);
+                            });
+                        }
+                    };
+
+                    const btnExcel = createButton("Excel Avançado", function() {
+                        this.disabled = true;
+                        this.innerText = "✓ Excel";
+                        typeText("Felipe aprendeu Excel Avançado!");
+                        checkProgress();
+                    });
+                    
+                    const btnPowerBI = createButton("Power BI", function() {
+                        this.disabled = true;
+                        this.innerText = "✓ Power BI";
+                        typeText("Felipe aprendeu Power BI!");
+                        checkProgress();
+                    });
+                    
+                    const btnPython = createButton("Python", function() {
+                        this.disabled = true;
+                        this.innerText = "✓ Python";
+                        typeText("Felipe aprendeu Python!");
+                        checkProgress();
+                    });
+                }
+            },
+            {
+                year: "2026.2",
+                enemyName: "Mercado Traba.",
+                level: "LvBoss",
+                sprite: "🏢",
+                startText: "Felipe comeca a busca epica por um estagio...",
+                hp: 100,
+                setup: function() {
+                    const btnAcelen = createButton("Entrevista Acelen", function() {
+                        this.disabled = true;
+                        damageBoss(10, "Resultado: Nao passou...", null);
+                        checkVictory();
+                    });
+
+                    const btnAmbev = createButton("Entrevista Ambev", function() {
+                        this.disabled = true;
+                        damageBoss(10, "Foi ate a penultima fase... mas o inimigo defendeu.", null);
+                        checkVictory();
+                    });
+
+                    let ligacaoBtn = null;
+
+                    const checkVictory = () => {
+                        if (btnAcelen.disabled && btnAmbev.disabled && !ligacaoBtn) {
+                            setTimeout(() => {
+                                typeText("O telefone esta tocando... Numero desconhecido!");
+                                ligacaoBtn = createButton("Atender Ligação", function() {
+                                    // Agora vai para a próxima fase (Burocracia) em vez de vencer direto
+                                    damageBoss(80, "Acelen ligou de volta! APROVADO!!!", nextStage);
+                                });
+                                ui.actionMenu.innerHTML = '';
+                                ui.actionMenu.appendChild(ligacaoBtn);
+                            }, 2500);
+                        }
+                    }
+                }
+            },
+            {
+                year: "2026.2",
+                enemyName: "Burocr. UFBA",
+                level: "Lv999",
+                sprite: "📜",
+                startText: "Boss Final revelado: Aprovacao do estagio pela UFBA!",
+                hp: 100,
+                setup: function() {
+                    let attempts = 0;
+                    let currentHp = 100;
+
+                    const btnEscrever = createButton("Escrever Carta", function() {
+                        attempts++;
+                        
+                        if(attempts === 1) {
+                            currentHp -= 33;
+                            setHP(currentHp);
+                            typeText("A coordenacao recusou! Você precisa reescrever.");
+                            this.innerText = "Reescrever Carta";
+                        } 
+                        else if(attempts === 2) {
+                            currentHp -= 33;
+                            setHP(currentHp);
+                            typeText("Ainda faltam ajustes! Reescreva ate ficar perfeito.");
+                        } 
+                        else {
+                            damageBoss(34, "A carta ficou perfeita! Aprovado pela UFBA!", nextStage);
+                            this.disabled = true;
+                        }
+                    });
+                }
+            },
+            {
+                year: "2026.2",
+                enemyName: "Contrato TCE",
+                level: "Lv1",
+                sprite: "🤝",
+                startText: "Tudo aprovado na UFBA! So falta enviar o TCE para a Acelen.",
+                hp: 100,
+                setup: function() {
+                    createButton("Enviar TCE", function() {
+                        damageBoss(100, "TCE enviado com sucesso! O contrato ta assinado.", nextStage);
+                        this.disabled = true;
+                    });
+                }
+            },
+            {
+                year: "16/11",
+                enemyName: "O Grande Dia",
+                level: "Lv MAX",
+                sprite: "🚀",
+                startText: "Sua jornada na Acelen comeca oficialmente no dia 16/11!",
+                hp: 100,
+                setup: function() {
+                    createButton("COMEMORAR!", function() {
+                        damageBoss(100, "BOM ESTAGIO, AMOR!!!", triggerVictoryScreen);
+                        this.disabled = true;
+                    });
+                }
+            }
         ];
 
-        let currentPhase = -1; // -1 é a tela inicial que já está no HTML
-        const totalPhases = phases.length;
+        // --- FUNÇÕES CORE DO JOGO ---
 
-        function updateUI() {
-            const data = phases[currentPhase];
-            
-            // Elementos
-            const badge = document.getElementById('year-badge');
-            const icon = document.getElementById('icon');
-            const text = document.getElementById('text');
-            const card = document.getElementById('story-card');
-            
-            // Remove animação para resetar
-            card.classList.remove('fade-in');
-            void card.offsetWidth; // trigger reflow
-            
-            // Atualiza conteúdo
-            badge.innerText = data.year;
-            icon.innerText = data.icon;
-            text.innerText = data.text;
-            
-            // Adiciona animação
-            card.classList.add('fade-in');
+        function initStage(index) {
+            const stage = stages[index];
+            if(!stage) return;
 
-            // Atualiza barra de progresso
-            const progressPercent = Math.round(((currentPhase + 1) / totalPhases) * 100);
-            document.getElementById('progress').style.width
+            // Update UI
+            ui.yearDisplay.innerText = `ANO: ${stage.year}`;
+            ui.enemyName.innerText = stage.enemyName;
+            ui.enemyLvl.innerText = stage.level;
+            ui.enemySprite.innerText = stage.sprite;
+            setHP(stage.hp);
+            
+            // Reset Menu
+            ui.actionMenu.innerHTML = '';
+            
+            // Type Text and Setup Buttons after
+            typeText(stage.startText, () => {
+                stage.setup();
+            });
+        }
+
+        function createButton(text, onClickHandler) {
+            const btn = document.createElement('button');
+            btn.className = 'retro-btn';
+            btn.innerText = text;
+            btn.onclick = onClickHandler;
+            ui.actionMenu.appendChild(btn);
+            return btn;
+        }
+
+        function setHP(percent) {
+            if(percent < 0) percent = 0;
+            ui.enemyHp.style.width = `${percent}%`;
+            
+            // Muda cor baseado no HP
+            if(percent > 50) ui.enemyHp.style.backgroundColor = 'var(--hp-green)';
+            else if(percent > 20) ui.enemyHp.style.backgroundColor = '#facc15'; // amarelo
+            else ui.enemyHp.style.backgroundColor = 'var(--hp-red)';
+        }
+
+        function damageBoss(damagePercent, resultText, onComplete) {
+            ui.enemySprite.classList.add('shake-animation');
+            setTimeout(() => ui.enemySprite.classList.remove('shake-animation'), 500);
+
+            // Calcula novo HP baseado na largura atual
+            let currentWidth = parseFloat(ui.enemyHp.style.width) || 100;
+            setHP(currentWidth - damagePercent);
+
+            typeText(resultText, () => {
+                if(onComplete) {
+                    setTimeout(onComplete, 1500);
+                }
+            });
+        }
+
+        function typeText(text, callback) {
+            if (isTyping) return;
+            isTyping = true;
+            ui.dialogueText.innerText = '';
+            ui.actionMenu.style.pointerEvents = 'none'; // Bloqueia cliques durante o texto
+            
+            let i = 0;
+            const speed = 30; // ms por letra
+
+            function typeWriter() {
+                if (i < text.length) {
+                    ui.dialogueText.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, speed);
+                } else {
+                    isTyping = false;
+                    ui.actionMenu.style.pointerEvents = 'auto';
+                    if (callback) callback();
+                }
+            }
+            typeWriter();
+        }
+
+        function nextStage() {
+            currentStageIndex++;
+            if (currentStageIndex < stages.length) {
+                // Efeito de transição suave
+                ui.gameContainer.style.opacity = '0';
+                ui.gameContainer.style.transition = 'opacity 0.3s';
+                
+                setTimeout(() => {
+                    initStage(currentStageIndex);
+                    ui.gameContainer.style.opacity = '1';
+                }, 300);
+            }
+        }
+
+        function triggerVictoryScreen() {
+            // Efeito visual sumindo a tela do jogo
+            ui.gameContainer.style.transition = 'opacity 1s, transform 1s';
+            ui.gameContainer.style.opacity = '0';
+            ui.gameContainer.style.transform = 'scale(0.9)';
+
+            setTimeout(() => {
+                ui.gameContainer.classList.add('hidden');
+                ui.victoryScreen.classList.remove('hidden');
+                fireConfetti();
+            }, 1000);
+        }
+
+        function openLetter() {
+            ui.victoryScreen.classList.add('hidden');
+            ui.letterScreen.classList.remove('hidden');
+            // Joga para o topo da carta ao abrir
+            ui.letterScreen.scrollTop = 0;
+        }
+
+        function closeLetter() {
+            ui.letterScreen.classList.add('hidden');
+            ui.victoryScreen.classList.remove('hidden');
+        }
+
+        function fireConfetti() {
+            var duration = 4000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                // Confetes saindo das bordas
+                confetti({
+                    particleCount: 4,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#4ade80', '#facc15', '#3b82f6', '#ffffff'] 
+                });
+                confetti({
+                    particleCount: 4,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#4ade80', '#facc15', '#3b82f6', '#ffffff']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        // --- INICIALIZAÇÃO ---
+        // Pequeno delay inicial para criar expectativa
+        setTimeout(() => {
+            initStage(currentStageIndex);
+        }, 500);
+
+    </script>
+</body>
+</html>

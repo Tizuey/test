@@ -335,43 +335,37 @@
                 hp: 100,
                 setup: function() {
                     let skillsLearned = 0;
-                    const hpPerSkill = 100 / 3;
                     let currentHp = 100;
 
-                    const checkProgress = () => {
+                    const learnSkill = (btn, label, msg) => {
+                        btn.disabled = true;
+                        btn.innerText = "✓ " + label;
                         skillsLearned++;
-                        currentHp -= hpPerSkill;
+                        currentHp = 100 - (100 / 3) * skillsLearned;
                         setHP(currentHp);
                         ui.enemySprite.classList.add('shake-animation');
                         setTimeout(() => ui.enemySprite.classList.remove('shake-animation'), 500);
 
-                        if (skillsLearned === 3) {
-                            setHP(0);
-                            typeText("Skills equipadas com sucesso! Seu curriculo evoluiu!", () => {
-                                setTimeout(nextStage, 2000);
-                            });
-                        }
+                        typeText(msg, () => {
+                            if (skillsLearned === 3) {
+                                setHP(0);
+                                typeText("Skills equipadas com sucesso! Seu curriculo evoluiu!", () => {
+                                    setTimeout(nextStage, 2000);
+                                });
+                            }
+                        });
                     };
 
-                    createButton("Excel Avançado", function() {
-                        this.disabled = true;
-                        this.innerText = "✓ Excel";
-                        typeText("Felipe aprendeu Excel Avançado!");
-                        checkProgress();
+                    createButton("Curso Excel", function() {
+                        learnSkill(this, "Excel", "Felipe fez o curso livre de Excel Avançado!");
                     });
 
-                    createButton("Power BI", function() {
-                        this.disabled = true;
-                        this.innerText = "✓ Power BI";
-                        typeText("Felipe aprendeu Power BI!");
-                        checkProgress();
+                    createButton("Curso Power BI", function() {
+                        learnSkill(this, "Power BI", "Felipe fez o curso livre de Power BI!");
                     });
 
-                    createButton("Python", function() {
-                        this.disabled = true;
-                        this.innerText = "✓ Python";
-                        typeText("Felipe aprendeu Python!");
-                        checkProgress();
+                    createButton("Curso Python", function() {
+                        learnSkill(this, "Python", "Felipe fez o curso livre de Python!");
                     });
                 }
             },
@@ -423,11 +417,11 @@
                     createButton("Escrever carta", function() {
                         step++;
                         if (step === 1) {
-                            this.innerText = "Reescrever carta";
-                            damageBoss(20, "A UFBA pediu ajustes... Felipe vai precisar reescrever!", null);
-                        } else if (step === 2) {
                             this.innerText = "Melhorar carta";
-                            damageBoss(20, "Melhorou, mas ainda nao ficou boa... mais uma revisao!", null);
+                            damageBoss(20, "Primeira versao pronta! Mas Felipe percebeu que precisa melhorar a carta...", null);
+                        } else if (step === 2) {
+                            this.innerText = "Reescrever carta";
+                            damageBoss(20, "Ficou melhor! Mas da pra ficar ainda melhor... Mais uma reescrita!", null);
                         } else {
                             this.disabled = true;
                             damageBoss(20, "Carta de justificativa APROVADA pela UFBA!!!", () => {
@@ -495,7 +489,10 @@
         }
 
         function typeText(text, callback) {
-            if (isTyping) return;
+            if (isTyping) {
+                setTimeout(() => typeText(text, callback), 100);
+                return;
+            }
             isTyping = true;
             ui.dialogueText.innerText = '';
             ui.actionMenu.style.pointerEvents = 'none';

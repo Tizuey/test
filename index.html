@@ -24,18 +24,16 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             overflow: hidden;
-            touch-action: manipulation; /* Evita zoom no celular duplo clique */
+            touch-action: manipulation;
             user-select: none;
         }
 
-        /* Bordas estilo Pixel Art / Retro */
         .retro-border {
             border: 4px solid var(--border-color);
             background-color: var(--panel-bg);
             border-radius: 4px;
         }
 
-        /* Botões de Ação */
         .retro-btn {
             background: transparent;
             color: var(--text-main);
@@ -70,7 +68,6 @@
             display: none;
         }
 
-        /* Barra de HP */
         .hp-bar-container {
             width: 100%;
             height: 12px;
@@ -86,7 +83,6 @@
             transition: width 0.5s ease-out, background-color 0.3s;
         }
 
-        /* Animações */
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
             10% { transform: translate(-1px, -2px) rotate(-1deg); }
@@ -100,21 +96,15 @@
             90% { transform: translate(1px, 2px) rotate(0deg); }
             100% { transform: translate(1px, -2px) rotate(-1deg); }
         }
-        .shake-animation {
-            animation: shake 0.5s;
-        }
+        .shake-animation { animation: shake 0.5s; }
 
         @keyframes blink {
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
-        .blink {
-            animation: blink 1s infinite;
-        }
+        .blink { animation: blink 1s infinite; }
         
-        .fade-in {
-            animation: fadeIn 1s forwards;
-        }
+        .fade-in { animation: fadeIn 1s forwards; }
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -126,16 +116,12 @@
     <!-- CONTAINER PRINCIPAL DO JOGO -->
     <div id="game-container" class="w-full max-w-md h-full sm:h-[85vh] flex flex-col relative retro-border shadow-2xl overflow-hidden bg-black/40">
         
-        <!-- CABEÇALHO / INFORMAÇÕES DE ANO -->
         <div class="p-3 border-b-4 border-slate-300 flex justify-between items-center text-[10px] bg-slate-800">
             <span id="player-name" class="text-blue-300">JOGADOR: FELIPE</span>
             <span id="year-display" class="text-yellow-400">ANO: 2023</span>
         </div>
 
-        <!-- ÁREA DE BATALHA (Inimigo) -->
         <div class="flex-1 flex flex-col justify-start p-4 relative">
-            
-            <!-- Painel do Inimigo/Desafio -->
             <div id="enemy-panel" class="retro-border p-3 w-4/5 self-end rounded-bl-xl shadow-lg mb-4">
                 <div class="flex justify-between items-end mb-2">
                     <h2 id="enemy-name" class="text-[10px] sm:text-xs text-red-400 leading-tight">1º Semestre</h2>
@@ -146,37 +132,28 @@
                 </div>
             </div>
 
-            <!-- Sprite / Emoji do Inimigo -->
             <div class="flex-1 flex items-center justify-center">
                 <div id="enemy-sprite" class="text-6xl sm:text-8xl transition-all duration-300 filter drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
                     👹
                 </div>
             </div>
-
         </div>
 
-        <!-- ÁREA INFERIOR (Diálogo e Comandos) -->
         <div class="h-2/5 min-h-[220px] flex flex-col p-2 gap-2">
-            
-            <!-- Caixa de Diálogo -->
             <div class="retro-border h-24 p-3 flex items-start overflow-hidden relative">
                 <p id="dialogue-text" class="text-[9px] sm:text-[10px] leading-loose text-white/90"></p>
                 <span id="dialogue-arrow" class="absolute bottom-2 right-3 blink hidden text-[10px]">▼</span>
             </div>
 
-            <!-- Menu de Ações -->
             <div id="action-menu" class="retro-border flex-1 p-4 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 items-center justify-center pl-8 text-[9px] sm:text-[10px]">
                 <!-- Botões serão injetados via JS -->
             </div>
-            
         </div>
     </div>
 
     <!-- TELA DE VITÓRIA -->
     <div id="victory-screen" class="hidden fixed inset-0 z-40 bg-[#0a0a0a] flex flex-col items-center justify-center p-6 text-center overflow-y-auto">
-        
         <div class="w-full max-w-md space-y-8 fade-in">
-            <!-- Título -->
             <h1 class="text-xl sm:text-2xl text-green-400 leading-relaxed shadow-green-500/50 drop-shadow-lg">
                 Parabéns!<br><br>
                 Estágio<br>
@@ -188,7 +165,6 @@
                 Seja bem vindo a vida adulta
             </p>
 
-            <!-- Loot Box -->
             <div class="retro-border p-4 mt-8 bg-slate-900 text-left relative">
                 <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#0a0a0a] px-2 text-[10px] text-yellow-400">
                     LOOT DROP
@@ -202,8 +178,8 @@
                     <li class="flex items-start gap-3">
                         <span class="text-lg">💌</span>
                         <span class="leading-loose">
-                            <button onclick="openLetter()" class="text-yellow-400 hover:text-yellow-200 underline underline-offset-4 animate-pulse">
-                                [ Clique para abrir a Carta Especial ]
+                            <button onclick="openLetter()" class="text-yellow-400 hover:text-yellow-200 underline underline-offset-4 animate-pulse uppercase">
+                                [ Ler Carta ]
                             </button>
                         </span>
                     </li>
@@ -213,55 +189,43 @@
                     </li>
                 </ul>
             </div>
-            
-            <div class="text-[8px] text-slate-500 pt-8 pb-4">
-                Fim de Jogo. Desenvolvido com ❤️ pela sua Namorada
-            </div>
         </div>
     </div>
 
-    <!-- TELA DA CARTA DIGITAL (Invisível até clicar) -->
-    <div id="letter-screen" class="hidden fixed inset-0 z-50 bg-[#0a0a0a] overflow-y-auto">
-        <div class="flex flex-col items-center p-6 min-h-screen">
-            <div class="w-full max-w-md bg-amber-50 text-slate-900 p-6 rounded shadow-2xl relative mt-4 mb-8">
-                <!-- Usando uma fonte mais legível para a carta -->
-                <div class="font-sans text-sm sm:text-base leading-relaxed text-justify space-y-4">
-                    <p class="font-bold text-lg">Amor,</p>
-                    
-                    <p>Meu grande Amor, você não tem noção de como é incrível estar ao seu lado, e ver o homem foda que você está se tornando.</p>
-                    
-                    <p>Você deve estar com medo, uma fase nova da sua vida, pessoas novas, ambiente diferente, sua rotina vai ficar puxada.</p>
-                    
-                    <p>E talvez você erre, talvez você não vá conseguir estudar e malhar, vai ter que acordar bem cedo e vai ficar mais cansado.</p>
-                    
-                    <p>Mas eu estarei com você amor, pode contar comigo, eu estudo com você, te puxo para malhar, pode chorar no meu ombro, eu te busco na faculdade, faço bons resumos para as provas, o que você pedir eu farei com muito amor.</p>
-                    
-                    <p>E claro que quando meus tios viajarem você vai ter uma barca quinta depois da facul e do job. e ainda tem sexta do poke e sábado da pizza kkkk</p>
-                    
-                    <p>Mas não esqueça do quão foda você é, você conseguiu essa vaga por seu esforço próprio.</p>
-                    
-                    <p>e bora comemorar celebrar</p>
-                </div>
-
-                <!-- Foto do Casal -->
-                <div class="mt-6 border-4 border-white shadow-md transform rotate-1 bg-white p-2">
-                    <img src="1000138936.jpg" alt="Foto Felipe e Tizuey" class="w-full h-auto">
-                </div>
-
-                <!-- Botão Voltar -->
-                <button onclick="closeLetter()" class="mt-8 w-full bg-slate-900 text-white font-['Press_Start_2P'] text-[10px] py-4 rounded hover:bg-slate-700 transition active:scale-95">
-                    ◀ VOLTAR PARA PRÊMIOS
-                </button>
+    <!-- TELA DA CARTA DIGITAL (Estilo Item de RPG) -->
+    <div id="letter-screen" class="hidden fixed inset-0 z-50 bg-[#0a0a0a]/90 flex items-center justify-center p-4">
+        <div class="retro-border w-full max-w-md max-h-[90vh] overflow-y-auto bg-slate-900 p-5 shadow-2xl flex flex-col gap-4">
+            
+            <div class="border-b-2 border-slate-600 pb-2 mb-2 text-yellow-400 text-[10px] flex justify-between">
+                <span>ITEM: CARTA DO AMOR</span>
+                <span>Lv. MAX</span>
             </div>
+
+            <div class="text-[9px] sm:text-[10px] leading-loose text-slate-200 text-left space-y-4">
+                <p>Amor,</p>
+                <p>Meu grande Amor, você não tem noção de como é incrível estar ao seu lado, e ver o homem foda que você está se tornando.</p>
+                <p>Você deve estar com medo, uma fase nova da sua vida, pessoas novas, ambiente diferente, sua rotina vai ficar puxada.</p>
+                <p>E talvez você erre, talvez você não vá conseguir estudar e malhar, vai ter que acordar bem cedo e vai ficar mais cansado.</p>
+                <p>Mas eu estarei com você amor, pode contar comigo, eu estudo com você, te puxo para malhar, pode chorar no meu ombro, eu te busco na faculdade, faço bons resumos para as provas, o que você pedir eu farei com muito amor.</p>
+                <p>E claro que quando meus tios viajarem você vai ter uma barca quinta depois da facul e do job. e ainda tem sexta do poke e sábado da pizza kkkk</p>
+                <p>Mas não esqueça do quão foda você é, você conseguiu essa vaga por seu esforço próprio.</p>
+                <p>e bora comemorar celebrar</p>
+            </div>
+
+            <div class="mt-2 border-2 border-slate-600 p-1 bg-black">
+                <img src="1000138936.jpg" alt="Casal" class="w-full h-auto opacity-90 hover:opacity-100 transition-opacity">
+            </div>
+
+            <button onclick="closeLetter()" class="retro-btn text-center text-red-400 hover:text-red-300 border-2 border-red-900 bg-red-950/30 mt-2 py-3 w-full justify-center flex">
+                [ FECHAR INVENTÁRIO ]
+            </button>
         </div>
     </div>
 
     <script>
-        // --- ESTADO DO JOGO ---
         let currentStageIndex = 0;
         let isTyping = false;
         
-        // Elementos DOM
         const ui = {
             yearDisplay: document.getElementById('year-display'),
             enemyName: document.getElementById('enemy-name'),
@@ -275,7 +239,6 @@
             letterScreen: document.getElementById('letter-screen')
         };
 
-        // --- DEFINIÇÃO DAS FASES ---
         const stages = [
             {
                 year: "2023",
@@ -390,9 +353,8 @@
                     const checkVictory = () => {
                         if (btnAcelen.disabled && btnAmbev.disabled && !ligacaoBtn) {
                             setTimeout(() => {
-                                typeText("O telefone esta tocando... Numero desconhecido!");
+                                typeText("O telefone esta tocando... Numero misterioso!");
                                 ligacaoBtn = createButton("Atender Ligação", function() {
-                                    // Agora vai para a próxima fase (Burocracia) em vez de vencer direto
                                     damageBoss(80, "Acelen ligou de volta! APROVADO!!!", nextStage);
                                 });
                                 ui.actionMenu.innerHTML = '';
@@ -404,31 +366,23 @@
             },
             {
                 year: "2026.2",
-                enemyName: "Burocr. UFBA",
+                enemyName: "Buroc. UFBA",
                 level: "Lv999",
                 sprite: "📜",
                 startText: "Boss Final revelado: Aprovacao do estagio pela UFBA!",
                 hp: 100,
                 setup: function() {
-                    let attempts = 0;
-                    let currentHp = 100;
-
-                    const btnEscrever = createButton("Escrever Carta", function() {
-                        attempts++;
-                        
-                        if(attempts === 1) {
-                            currentHp -= 33;
-                            setHP(currentHp);
-                            typeText("A coordenacao recusou! Você precisa reescrever.");
+                    let hp = 100;
+                    const btn = createButton("Escrever Carta", function() {
+                        if(hp === 100) {
+                            hp -= 34;
+                            damageBoss(34, "A coordenacao recusou! Você precisa reescrever a justificativa.", null);
                             this.innerText = "Reescrever Carta";
-                        } 
-                        else if(attempts === 2) {
-                            currentHp -= 33;
-                            setHP(currentHp);
-                            typeText("Ainda faltam ajustes! Reescreva ate ficar perfeito.");
-                        } 
-                        else {
-                            damageBoss(34, "A carta ficou perfeita! Aprovado pela UFBA!", nextStage);
+                        } else if(hp === 66) {
+                            hp -= 33;
+                            damageBoss(33, "Ainda faltam ajustes! Reescreva ate ficar perfeito.", null);
+                        } else {
+                            damageBoss(33, "CARTA APROVADA pela UFBA!", nextStage);
                             this.disabled = true;
                         }
                     });
@@ -437,13 +391,13 @@
             {
                 year: "2026.2",
                 enemyName: "Contrato TCE",
-                level: "Lv1",
+                level: "Lv50",
                 sprite: "🤝",
-                startText: "Tudo aprovado na UFBA! So falta enviar o TCE para a Acelen.",
+                startText: "Tudo certo na faculdade. Agora e so o TCE.",
                 hp: 100,
                 setup: function() {
                     createButton("Enviar TCE", function() {
-                        damageBoss(100, "TCE enviado com sucesso! O contrato ta assinado.", nextStage);
+                        damageBoss(100, "TCE enviado e assinado com a Acelen!", nextStage);
                         this.disabled = true;
                     });
                 }
@@ -451,7 +405,7 @@
             {
                 year: "16/11",
                 enemyName: "O Grande Dia",
-                level: "Lv MAX",
+                level: "LvMAX",
                 sprite: "🚀",
                 startText: "Sua jornada na Acelen comeca oficialmente no dia 16/11!",
                 hp: 100,
@@ -464,23 +418,18 @@
             }
         ];
 
-        // --- FUNÇÕES CORE DO JOGO ---
-
         function initStage(index) {
             const stage = stages[index];
             if(!stage) return;
 
-            // Update UI
             ui.yearDisplay.innerText = `ANO: ${stage.year}`;
             ui.enemyName.innerText = stage.enemyName;
             ui.enemyLvl.innerText = stage.level;
             ui.enemySprite.innerText = stage.sprite;
             setHP(stage.hp);
             
-            // Reset Menu
             ui.actionMenu.innerHTML = '';
             
-            // Type Text and Setup Buttons after
             typeText(stage.startText, () => {
                 stage.setup();
             });
@@ -499,9 +448,8 @@
             if(percent < 0) percent = 0;
             ui.enemyHp.style.width = `${percent}%`;
             
-            // Muda cor baseado no HP
             if(percent > 50) ui.enemyHp.style.backgroundColor = 'var(--hp-green)';
-            else if(percent > 20) ui.enemyHp.style.backgroundColor = '#facc15'; // amarelo
+            else if(percent > 20) ui.enemyHp.style.backgroundColor = '#facc15';
             else ui.enemyHp.style.backgroundColor = 'var(--hp-red)';
         }
 
@@ -509,7 +457,6 @@
             ui.enemySprite.classList.add('shake-animation');
             setTimeout(() => ui.enemySprite.classList.remove('shake-animation'), 500);
 
-            // Calcula novo HP baseado na largura atual
             let currentWidth = parseFloat(ui.enemyHp.style.width) || 100;
             setHP(currentWidth - damagePercent);
 
@@ -524,10 +471,10 @@
             if (isTyping) return;
             isTyping = true;
             ui.dialogueText.innerText = '';
-            ui.actionMenu.style.pointerEvents = 'none'; // Bloqueia cliques durante o texto
+            ui.actionMenu.style.pointerEvents = 'none';
             
             let i = 0;
-            const speed = 30; // ms por letra
+            const speed = 30;
 
             function typeWriter() {
                 if (i < text.length) {
@@ -546,7 +493,6 @@
         function nextStage() {
             currentStageIndex++;
             if (currentStageIndex < stages.length) {
-                // Efeito de transição suave
                 ui.gameContainer.style.opacity = '0';
                 ui.gameContainer.style.transition = 'opacity 0.3s';
                 
@@ -558,7 +504,6 @@
         }
 
         function triggerVictoryScreen() {
-            // Efeito visual sumindo a tela do jogo
             ui.gameContainer.style.transition = 'opacity 1s, transform 1s';
             ui.gameContainer.style.opacity = '0';
             ui.gameContainer.style.transform = 'scale(0.9)';
@@ -571,15 +516,13 @@
         }
 
         function openLetter() {
-            ui.victoryScreen.classList.add('hidden');
             ui.letterScreen.classList.remove('hidden');
-            // Joga para o topo da carta ao abrir
-            ui.letterScreen.scrollTop = 0;
+            ui.letterScreen.classList.add('flex');
         }
 
         function closeLetter() {
             ui.letterScreen.classList.add('hidden');
-            ui.victoryScreen.classList.remove('hidden');
+            ui.letterScreen.classList.remove('flex');
         }
 
         function fireConfetti() {
@@ -587,7 +530,6 @@
             var end = Date.now() + duration;
 
             (function frame() {
-                // Confetes saindo das bordas
                 confetti({
                     particleCount: 4,
                     angle: 60,
@@ -609,8 +551,6 @@
             }());
         }
 
-        // --- INICIALIZAÇÃO ---
-        // Pequeno delay inicial para criar expectativa
         setTimeout(() => {
             initStage(currentStageIndex);
         }, 500);

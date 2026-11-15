@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Jornada do Estágio - Felipe</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
+
     <style>
         :root {
             --bg-color: #0f172a;
@@ -43,7 +43,7 @@
             position: relative;
             transition: all 0.1s;
         }
-        
+
         .retro-btn:hover, .retro-btn:active {
             background-color: rgba(255,255,255,0.1);
         }
@@ -103,11 +103,42 @@
             50% { opacity: 0; }
         }
         .blink { animation: blink 1s infinite; }
-        
+
         .fade-in { animation: fadeIn 1s forwards; }
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
+        }
+
+        /* Item clicável da loot box */
+        .loot-clickable {
+            cursor: pointer;
+            border: 2px dashed #facc15;
+            padding: 8px;
+            border-radius: 4px;
+            background-color: rgba(250, 204, 21, 0.08);
+        }
+        .loot-clickable:active { background-color: rgba(250, 204, 21, 0.2); }
+
+        /* Carta */
+        .letter-body {
+            font-family: 'VT323', monospace;
+            font-size: 22px;
+            line-height: 1.35;
+            color: #f1f5f9;
+            user-select: text;
+        }
+        .letter-body p { margin-bottom: 14px; }
+
+        .photo-frame {
+            border: 4px solid var(--border-color);
+            background-color: #0f172a;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .photo-frame img {
+            width: 100%;
+            display: block;
         }
     </style>
 </head>
@@ -115,7 +146,7 @@
 
     <!-- CONTAINER PRINCIPAL DO JOGO -->
     <div id="game-container" class="w-full max-w-md h-full sm:h-[85vh] flex flex-col relative retro-border shadow-2xl overflow-hidden bg-black/40">
-        
+
         <div class="p-3 border-b-4 border-slate-300 flex justify-between items-center text-[10px] bg-slate-800">
             <span id="player-name" class="text-blue-300">JOGADOR: FELIPE</span>
             <span id="year-display" class="text-yellow-400">ANO: 2023</span>
@@ -146,13 +177,13 @@
             </div>
 
             <div id="action-menu" class="retro-border flex-1 p-4 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 items-center justify-center pl-8 text-[9px] sm:text-[10px]">
-                <!-- Botões serão injetados via JS -->
             </div>
         </div>
     </div>
 
     <!-- TELA DE VITÓRIA -->
-    <div id="victory-screen" class="hidden fixed inset-0 z-40 bg-[#0a0a0a] flex flex-col items-center justify-center p-6 text-center overflow-y-auto">
+    <div id="victory-screen" class="hidden fixed inset-0 z-50 bg-[#0a0a0a] flex flex-col items-center justify-center p-6 text-center overflow-y-auto">
+
         <div class="w-full max-w-md space-y-8 fade-in">
             <h1 class="text-xl sm:text-2xl text-green-400 leading-relaxed shadow-green-500/50 drop-shadow-lg">
                 Parabéns!<br><br>
@@ -160,7 +191,7 @@
                 desbloqueado<br>
                 com sucesso
             </h1>
-            
+
             <p class="text-xs text-white blink mt-4">
                 Seja bem vindo a vida adulta
             </p>
@@ -169,55 +200,71 @@
                 <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#0a0a0a] px-2 text-[10px] text-yellow-400">
                     LOOT DROP
                 </div>
-                
+
                 <ul class="space-y-4 text-[9px] sm:text-[10px] text-slate-300 mt-4">
                     <li class="flex items-start gap-3">
                         <span class="text-lg">⛸️</span>
-                        <span class="leading-loose">1 voucher para patinar no gelo com sua namorada no parque shop as 9h 20/11</span>
+                        <span class="leading-loose">1 voucher para patinar no gelo com sua namorada no parque shop às 9h do dia 20/11</span>
                     </li>
-                    <li class="flex items-start gap-3">
+                    <li id="letter-item" class="flex items-start gap-3 loot-clickable" onclick="openLetter()">
                         <span class="text-lg">💌</span>
-                        <span class="leading-loose">
-                            <button onclick="openLetter()" class="text-yellow-400 hover:text-yellow-200 underline underline-offset-4 animate-pulse uppercase">
-                                [ Ler Carta ]
-                            </button>
-                        </span>
+                        <span class="leading-loose">1 carta especial<br><span class="text-yellow-400 blink">(clique para abrir)</span></span>
                     </li>
                     <li class="flex items-start gap-3">
                         <span class="text-lg">🎁</span>
-                        <span class="leading-loose">1 presente misterioso tão misterioso que so vai chegar semana que vem e sorry .</span>
+                        <span class="leading-loose">1 presente misterioso... tão misterioso que só vai chegar semana que vem (e sorry 😅)</span>
                     </li>
                 </ul>
+            </div>
+
+            <div class="text-[8px] text-slate-500 pt-8">
+                Fim de Jogo. Desenvolvido com ❤️
             </div>
         </div>
     </div>
 
-    <!-- TELA DA CARTA DIGITAL (Estilo Item de RPG) -->
-    <div id="letter-screen" class="hidden fixed inset-0 z-50 bg-[#0a0a0a]/90 flex items-center justify-center p-4">
-        <div class="retro-border w-full max-w-md max-h-[90vh] overflow-y-auto bg-slate-900 p-5 shadow-2xl flex flex-col gap-4">
-            
-            <div class="border-b-2 border-slate-600 pb-2 mb-2 text-yellow-400 text-[10px] flex justify-between">
-                <span>ITEM: CARTA DO AMOR</span>
-                <span>Lv. MAX</span>
+    <!-- TELA DA CARTA -->
+    <div id="letter-screen" class="hidden fixed inset-0 z-[60] bg-[#0a0a0a] overflow-y-auto">
+        <div class="w-full max-w-md mx-auto p-5 pb-10">
+
+            <button onclick="closeLetter()" class="retro-btn retro-border text-[10px] mb-5 !pl-4 !pr-4">
+                ◀ VOLTAR
+            </button>
+
+            <div class="retro-border p-5 bg-slate-900">
+                <div class="text-center text-2xl mb-4">💌</div>
+
+                <div class="letter-body">
+                    <p>Amor,</p>
+
+                    <p>Meu grande Amor, você não tem noção de como é incrível estar ao seu lado, e ver o homem foda que você está se tornando.</p>
+
+                    <p>Você deve estar com medo, uma fase nova da sua vida, pessoas novas, ambiente diferente, sua rotina vai ficar puxada.</p>
+
+                    <p>E talvez você erre, talvez você não vá conseguir estudar e malhar, vai ter que acordar bem cedo e vai ficar mais cansado.</p>
+
+                    <p>Mas eu estarei com você amor, pode contar comigo, eu estudo com você, te puxo para malhar, pode chorar no meu ombro, eu te busco na faculdade, faço bons resumos para as provas, o que você pedir eu farei com muito amor.</p>
+
+                    <p>E claro que quando meus tios viajarem você vai ter uma barca quinta depois da facul e do job. E ainda tem sexta do poke e sábado da pizza kkkk</p>
+
+                    <p>Mas não esqueça do quão foda você é, você conseguiu essa vaga por seu esforço próprio.</p>
+
+                    <p>E bora comemorar e celebrar! 🎉</p>
+                </div>
+
+                <!-- FOTO DO CASAL: coloque o arquivo "foto.jpg" na mesma pasta deste HTML -->
+                <div class="photo-frame mt-4">
+                    <img id="letter-photo" src="1000138936.jpg" alt="Nossa foto"
+                         onerror="this.style.display='none'; document.getElementById('photo-placeholder').style.display='flex';">
+                    <div id="photo-placeholder" style="display:none;" class="h-56 items-center justify-center text-center text-[9px] leading-loose text-slate-400 p-4 flex-col">
+                        <span class="text-3xl mb-2">📸</span>
+                        <span>nossa foto vai aqui</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="text-[9px] sm:text-[10px] leading-loose text-slate-200 text-left space-y-4">
-                <p>Amor,</p>
-                <p>Meu grande Amor, você não tem noção de como é incrível estar ao seu lado, e ver o homem foda que você está se tornando.</p>
-                <p>Você deve estar com medo, uma fase nova da sua vida, pessoas novas, ambiente diferente, sua rotina vai ficar puxada.</p>
-                <p>E talvez você erre, talvez você não vá conseguir estudar e malhar, vai ter que acordar bem cedo e vai ficar mais cansado.</p>
-                <p>Mas eu estarei com você amor, pode contar comigo, eu estudo com você, te puxo para malhar, pode chorar no meu ombro, eu te busco na faculdade, faço bons resumos para as provas, o que você pedir eu farei com muito amor.</p>
-                <p>E claro que quando meus tios viajarem você vai ter uma barca quinta depois da facul e do job. e ainda tem sexta do poke e sábado da pizza kkkk</p>
-                <p>Mas não esqueça do quão foda você é, você conseguiu essa vaga por seu esforço próprio.</p>
-                <p>e bora comemorar celebrar</p>
-            </div>
-
-            <div class="mt-2 border-2 border-slate-600 p-1 bg-black">
-                <img src="1000138936.jpg" alt="Casal" class="w-full h-auto opacity-90 hover:opacity-100 transition-opacity">
-            </div>
-
-            <button onclick="closeLetter()" class="retro-btn text-center text-red-400 hover:text-red-300 border-2 border-red-900 bg-red-950/30 mt-2 py-3 w-full justify-center flex">
-                [ FECHAR INVENTÁRIO ]
+            <button onclick="closeLetter()" class="retro-btn retro-border text-[10px] mt-6 !pl-4 !pr-4">
+                ◀ VOLTAR
             </button>
         </div>
     </div>
@@ -225,7 +272,7 @@
     <script>
         let currentStageIndex = 0;
         let isTyping = false;
-        
+
         const ui = {
             yearDisplay: document.getElementById('year-display'),
             enemyName: document.getElementById('enemy-name'),
@@ -284,7 +331,7 @@
                 enemyName: "Tempo Livre",
                 level: "Lv1",
                 sprite: "⏳",
-                startText: "Apenas 2 materias esse semestre. O que fazer?",
+                startText: "Apenas 2 materias esse semestre. Hora de fazer cursos livres!",
                 hp: 100,
                 setup: function() {
                     let skillsLearned = 0;
@@ -306,21 +353,21 @@
                         }
                     };
 
-                    const btnExcel = createButton("Excel Avançado", function() {
+                    createButton("Excel Avançado", function() {
                         this.disabled = true;
                         this.innerText = "✓ Excel";
                         typeText("Felipe aprendeu Excel Avançado!");
                         checkProgress();
                     });
-                    
-                    const btnPowerBI = createButton("Power BI", function() {
+
+                    createButton("Power BI", function() {
                         this.disabled = true;
                         this.innerText = "✓ Power BI";
                         typeText("Felipe aprendeu Power BI!");
                         checkProgress();
                     });
-                    
-                    const btnPython = createButton("Python", function() {
+
+                    createButton("Python", function() {
                         this.disabled = true;
                         this.innerText = "✓ Python";
                         typeText("Felipe aprendeu Python!");
@@ -353,7 +400,7 @@
                     const checkVictory = () => {
                         if (btnAcelen.disabled && btnAmbev.disabled && !ligacaoBtn) {
                             setTimeout(() => {
-                                typeText("O telefone esta tocando... Numero misterioso!");
+                                typeText("O telefone esta tocando... Numero desconhecido!");
                                 ligacaoBtn = createButton("Atender Ligação", function() {
                                     damageBoss(80, "Acelen ligou de volta! APROVADO!!!", nextStage);
                                 });
@@ -365,54 +412,34 @@
                 }
             },
             {
-                year: "2026.2",
-                enemyName: "Buroc. UFBA",
-                level: "Lv999",
-                sprite: "📜",
-                startText: "Boss Final revelado: Aprovacao do estagio pela UFBA!",
+                year: "NOV 2026",
+                enemyName: "TCE do Estagio",
+                level: "LvBurocracia",
+                sprite: "📝",
+                startText: "Para oficializar, a UFBA precisa aprovar o TCE! Felipe precisa escrever a carta de justificativa...",
                 hp: 100,
                 setup: function() {
-                    let hp = 100;
-                    const btn = createButton("Escrever Carta", function() {
-                        if(hp === 100) {
-                            hp -= 34;
-                            damageBoss(34, "A coordenacao recusou! Você precisa reescrever a justificativa.", null);
-                            this.innerText = "Reescrever Carta";
-                        } else if(hp === 66) {
-                            hp -= 33;
-                            damageBoss(33, "Ainda faltam ajustes! Reescreva ate ficar perfeito.", null);
+                    let step = 0;
+                    createButton("Escrever carta", function() {
+                        step++;
+                        if (step === 1) {
+                            this.innerText = "Reescrever carta";
+                            damageBoss(20, "A UFBA pediu ajustes... Felipe vai precisar reescrever!", null);
+                        } else if (step === 2) {
+                            this.innerText = "Melhorar carta";
+                            damageBoss(20, "Melhorou, mas ainda nao ficou boa... mais uma revisao!", null);
                         } else {
-                            damageBoss(33, "CARTA APROVADA pela UFBA!", nextStage);
                             this.disabled = true;
+                            damageBoss(20, "Carta de justificativa APROVADA pela UFBA!!!", () => {
+                                ui.actionMenu.innerHTML = '';
+                                typeText("Agora e so mandar o TCE assinado para a Acelen!", () => {
+                                    createButton("Enviar TCE assinado", function() {
+                                        this.disabled = true;
+                                        damageBoss(40, "TCE assinado enviado para a Acelen! Bom estagio, Felipe! Comeca dia 16/11!", triggerVictoryScreen);
+                                    });
+                                });
+                            });
                         }
-                    });
-                }
-            },
-            {
-                year: "2026.2",
-                enemyName: "Contrato TCE",
-                level: "Lv50",
-                sprite: "🤝",
-                startText: "Tudo certo na faculdade. Agora e so o TCE.",
-                hp: 100,
-                setup: function() {
-                    createButton("Enviar TCE", function() {
-                        damageBoss(100, "TCE enviado e assinado com a Acelen!", nextStage);
-                        this.disabled = true;
-                    });
-                }
-            },
-            {
-                year: "16/11",
-                enemyName: "O Grande Dia",
-                level: "LvMAX",
-                sprite: "🚀",
-                startText: "Sua jornada na Acelen comeca oficialmente no dia 16/11!",
-                hp: 100,
-                setup: function() {
-                    createButton("COMEMORAR!", function() {
-                        damageBoss(100, "BOM ESTAGIO, AMOR!!!", triggerVictoryScreen);
-                        this.disabled = true;
                     });
                 }
             }
@@ -427,9 +454,9 @@
             ui.enemyLvl.innerText = stage.level;
             ui.enemySprite.innerText = stage.sprite;
             setHP(stage.hp);
-            
+
             ui.actionMenu.innerHTML = '';
-            
+
             typeText(stage.startText, () => {
                 stage.setup();
             });
@@ -447,7 +474,7 @@
         function setHP(percent) {
             if(percent < 0) percent = 0;
             ui.enemyHp.style.width = `${percent}%`;
-            
+
             if(percent > 50) ui.enemyHp.style.backgroundColor = 'var(--hp-green)';
             else if(percent > 20) ui.enemyHp.style.backgroundColor = '#facc15';
             else ui.enemyHp.style.backgroundColor = 'var(--hp-red)';
@@ -472,7 +499,7 @@
             isTyping = true;
             ui.dialogueText.innerText = '';
             ui.actionMenu.style.pointerEvents = 'none';
-            
+
             let i = 0;
             const speed = 30;
 
@@ -495,7 +522,7 @@
             if (currentStageIndex < stages.length) {
                 ui.gameContainer.style.opacity = '0';
                 ui.gameContainer.style.transition = 'opacity 0.3s';
-                
+
                 setTimeout(() => {
                     initStage(currentStageIndex);
                     ui.gameContainer.style.opacity = '1';
@@ -517,12 +544,11 @@
 
         function openLetter() {
             ui.letterScreen.classList.remove('hidden');
-            ui.letterScreen.classList.add('flex');
+            ui.letterScreen.scrollTop = 0;
         }
 
         function closeLetter() {
             ui.letterScreen.classList.add('hidden');
-            ui.letterScreen.classList.remove('flex');
         }
 
         function fireConfetti() {
@@ -535,7 +561,7 @@
                     angle: 60,
                     spread: 55,
                     origin: { x: 0 },
-                    colors: ['#4ade80', '#facc15', '#3b82f6', '#ffffff'] 
+                    colors: ['#4ade80', '#facc15', '#3b82f6', '#ffffff']
                 });
                 confetti({
                     particleCount: 4,
@@ -554,7 +580,6 @@
         setTimeout(() => {
             initStage(currentStageIndex);
         }, 500);
-
     </script>
 </body>
 </html>
